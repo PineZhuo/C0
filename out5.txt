@@ -1,0 +1,35 @@
+.constants:
+0 S "main"
+.start:
+.functions:
+0 0 0 1
+.F0:
+0 ipush 0
+1 loada 0,0
+2 iscan 
+3 istore 
+4 loada 0,0
+5 iload 
+6 ipush 10
+7 isub 
+8 jg 10
+9 jmp 18
+10 loada 0,0
+11 iload 
+12 ipush 1
+13 iadd 
+14 iprint 
+15 bipush 10
+16 cprint 
+17 jmp 25
+18 loada 0,0
+19 iload 
+20 ipush 1
+21 isub 
+22 iprint 
+23 bipush 10
+24 cprint 
+25 ipush 0
+26 iret 
+27 ipush 0
+28 iret 

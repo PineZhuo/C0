@@ -1230,31 +1230,25 @@ public class Analyser {
 	//Ìí¼ÓÌø×ªÖ¸Áî
 	private void addCompareInstruct(String s) {
 		String jmp1 = new String();
-		String jmp2 = new String();
+		String jmp2 = new String("jmp");
 		int a1 = funcOpTable.get(funcNum-1).size() + 2;
 		if(s.equals("<")) {
 			jmp1 = "jl";
-			jmp2 = "jge";
 		}
 		else if(s.equals("<=")){
 			jmp1 = "jle";
-			jmp2 = "jg";
 		}
 		else if(s.equals(">")) {
 			jmp1 = "jg";
-			jmp2 = "jle";
 		}
 		else if(s.equals(">=")) {
 			jmp1 = "jge";
-			jmp2 = "jl";
 		}
 		else if(s.equals("==")) {
 			jmp1 = "je";
-			jmp2 = "jne";
 		}
 		else if(s.equals("!=")) {
 			jmp1 = "jne";
-			jmp2 = "je";
 		}
 		funcOpTable.get(funcNum-1).add(new FuncOption(jmp1, new Pair(a1)));
 		funcOpTable.get(funcNum-1).add(new FuncOption(jmp2, new Pair()));
