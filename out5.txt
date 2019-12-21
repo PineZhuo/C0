@@ -5,31 +5,54 @@
 0 0 0 1
 .F0:
 0 ipush 0
-1 loada 0,0
-2 iscan 
-3 istore 
-4 loada 0,0
-5 iload 
-6 ipush 10
-7 isub 
-8 jg 10
-9 jmp 18
-10 loada 0,0
-11 iload 
-12 ipush 1
-13 iadd 
-14 iprint 
-15 bipush 10
-16 cprint 
-17 jmp 25
-18 loada 0,0
-19 iload 
-20 ipush 1
-21 isub 
-22 iprint 
-23 bipush 10
-24 cprint 
-25 ipush 0
-26 iret 
-27 ipush 0
-28 iret 
+1 ipush 0
+2 loada 0,0
+3 iload 
+4 ipush 10
+5 isub 
+6 jle 8
+7 jmp 51
+8 loada 0,0
+9 iload 
+10 ipush 5
+11 isub 
+12 jge 14
+13 jmp 27
+14 loada 0,1
+15 loada 0,0
+16 iload 
+17 loada 0,0
+18 iload 
+19 imul 
+20 istore 
+21 loada 0,1
+22 iload 
+23 iprint 
+24 bipush 10
+25 cprint 
+26 jmp 39
+27 loada 0,1
+28 loada 0,0
+29 iload 
+30 loada 0,0
+31 iload 
+32 iadd 
+33 istore 
+34 loada 0,1
+35 iload 
+36 iprint 
+37 bipush 10
+38 cprint 
+39 loada 0,0
+40 loada 0,0
+41 iload 
+42 ipush 2
+43 iadd 
+44 istore 
+45 loada 0,0
+46 iload 
+47 iprint 
+48 bipush 10
+49 cprint 
+50 jmp 2
+51 ret 

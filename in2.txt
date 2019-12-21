@@ -18,11 +18,11 @@ int f3(int p1, int p2){
 
 int main()
 {
-    int c = f2();
+    int c = f2(), d, e;
 print(c);
-    int d = f3(x, y);
+    d = f3(x, y);
 print(d);
-   int e =  f1(a, b, x);
+   e =  f1(a, b, x);
 	
 f2();
 return 0;

@@ -762,8 +762,11 @@ public class Analyser {
 			}
 			unreadToken();
 			Error err = expression();
-			funcOpTable.get(funcNum-1).add(new FuncOption("iret", new Pair()));
 			if(err != null) return err;
+			funcOpTable.get(funcNum-1).add(new FuncOption("iret", new Pair()));
+			token = nextToken();
+			if(token.getTokenType() != TokenType.SEMICOLON)
+				return new Error(token.getPos(), ErrorType.NO_SEMICOLON_ERROR);
 		}else {
 			if(indexTable.get(funcNum-1).getRetType() == IdentiType.VOID) {
 				funcOpTable.get(funcNum-1).add(new FuncOption("ret", new Pair()));
