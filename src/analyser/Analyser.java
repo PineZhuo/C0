@@ -66,22 +66,22 @@ public class Analyser {
 			err.printError();
 		if(!isHaveMain())
 			System.out.println("Error! There is not main function!");
-		System.out.println(".constants");
+		System.out.println(".constants:");
 		for(int i = 0; i < constTable.size(); i++) {
 			constTable.get(i).print();
 		}
-		System.out.println(".start");
+		System.out.println(".start:");
 		for(int i = 0; i < startTable.size(); i++) {
 			System.out.print(i + " ");
 			startTable.get(i).print();
 		}
-		System.out.println(".functions");
+		System.out.println(".functions:");
 		for(int i = 0; i < funcTable.size(); i++) {
 			funcTable.get(i).print();
 		}
 //		System.out.println(funcOpTable.get(0));
 		for(int i = 0; i < funcNum; i++) {
-			System.out.println(".F" + i);
+			System.out.println(".F" + i + ":");
 			for(int j = 0; j < funcOpTable.get(i).size(); j++) {
 				System.out.print(j + " ");
 				funcOpTable.get(i).get(j).print();
