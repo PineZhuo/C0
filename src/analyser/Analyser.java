@@ -906,6 +906,8 @@ public class Analyser {
 		funcOpTable.get(funcNum-1).add(new FuncOption("iprint", new Pair()));
 		Token token = nextToken();
 		while(token.getTokenType() == TokenType.COMMA) {
+			funcOpTable.get(funcNum-1).add(new FuncOption("bipush", new Pair(32)));
+			funcOpTable.get(funcNum-1).add(new FuncOption("cprint", new Pair()));
 			err = print();
 			if(err != null) return err;
 			funcOpTable.get(funcNum-1).add(new FuncOption("iprint", new Pair()));
