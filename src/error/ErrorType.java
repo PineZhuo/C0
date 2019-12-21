@@ -1,0 +1,30 @@
+package error;
+
+//错误类型
+public enum ErrorType {
+	INVALID_INPUT_ERROR,
+	TOO_LARGE_INTEGER,
+
+	NO_SEMICOLON_ERROR,
+	NO_LEFT_BRACKET,
+	NO_RIGHT_BRACKET,
+	NO_LEFT_BRACE,
+	NO_RIGHT_BRACE,
+	
+	CONSTANT_NEED_VALUE,//常量未赋值
+	
+	// 重复声明
+	DUPLICATE_DECLARATION,
+	//非法的赋值
+	INVALID_ASSIGNMENT,
+	//未声明
+	NO_DECLARED,
+	//参数和调用时不同
+	PARAMETER_TYPE_ERROR,
+	//赋值表达式不能以void作右值
+	CANNOT_ASSIGN_VOID,
+	//注释
+	ANNOTATION_ERROR,
+	//返回值类型错误
+	RUTURN_VALUE_TYPE_ERROR,
+}
