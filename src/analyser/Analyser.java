@@ -1267,8 +1267,11 @@ public class Analyser {
 		for(int i = size-2; i >= 0; i--) {
 			if(isCompareInstruct(tmp.get(i).getOpcode())) {
 				//找到了第一个跳转
-				funcOpTable.get(funcNum-1).get(i).setOperands(new Pair(size));
-				break;
+				//而且没有offset
+				if(tmp.get(i).getOperandNum() == 0) {
+					funcOpTable.get(funcNum-1).get(i).setOperands(new Pair(size));
+					break;
+				}
 			}
 		}
 	}

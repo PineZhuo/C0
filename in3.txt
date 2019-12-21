@@ -6,13 +6,13 @@ int main()
  int c = 0;
  int i = 0;
  scan(n);
- prinf(a, b);
+ print(a, b);
  while(i < n - 2)
  {
    c = a + b;
    a = b;
    b = c;
-   printf(c);
+   print(c);
      i = i+1;
  }
  return 0;

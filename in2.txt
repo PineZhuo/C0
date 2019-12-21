@@ -18,5 +18,5 @@ void main()
 {
     int c = f2();
     int d = f3(x, y);
-    f1();
+    f1(a, b, x);
 }

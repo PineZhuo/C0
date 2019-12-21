@@ -37,4 +37,8 @@ public class FuncOption {
 			operands = new Pair(op.getFirst(), op.getSecond());
 		}
 	}
+	
+	public int getOperandNum() {
+		return operands.size();
+	}
 }
