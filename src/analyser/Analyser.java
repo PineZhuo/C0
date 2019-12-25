@@ -886,7 +886,17 @@ public class Analyser {
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 		
 //		err = statement();
-		err = compoundState();
+		token = nextToken();
+		if(token.getTokenType() == TokenType.LEFT_BRACE) {
+			unreadToken();
+			err = compoundState();
+		}
+		else {
+			unreadToken();
+			err = statement();
+		}
+			
+		
 		if(err != null) return err;
 		
 		token = nextToken();
@@ -900,7 +910,15 @@ public class Analyser {
 			funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair()));//if如果跑了，就不跑else了
 			setJmpInstruct();
 //			err = statement();
-			err = compoundState();
+			token = nextToken();
+			if(token.getTokenType() == TokenType.LEFT_BRACE) {
+				unreadToken();
+				err = compoundState();
+			}
+			else {
+				unreadToken();
+				err = statement();
+			}
 			if(err != null) return err;
 			setJmpInstruct();
 		}
@@ -928,7 +946,15 @@ public class Analyser {
 			return new Error(token.getPos(), ErrorType.NO_RIGHT_BRACKET);
 		
 //		err = statement();
-		err = compoundState();
+		token = nextToken();
+		if(token.getTokenType() == TokenType.LEFT_BRACE) {
+			unreadToken();
+			err = compoundState();
+		}
+		else {
+			unreadToken();
+			err = statement();
+		}
 		if(err != null) return err;
 		funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair(index1)));
 		setJmpInstruct();

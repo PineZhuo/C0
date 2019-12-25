@@ -83,76 +83,73 @@
 4 iload 
 5 ipush 1
 6 isub 
-7 ipush 0
-8 loada 0,3
-9 iload 
-10 loada 0,4
-11 iload 
-12 isub 
-13 jle 15
-14 jmp 72
-15 loada 0,5
-16 loada 0,4
+7 loada 0,3
+8 iload 
+9 loada 0,4
+10 iload 
+11 isub 
+12 jle 14
+13 jmp 69
+14 loada 0,4
+15 iload 
+16 loada 0,3
 17 iload 
-18 loada 0,3
-19 iload 
-20 isub 
-21 istore 
-22 loada 0,5
-23 loada 0,5
-24 iload 
-25 ipush 2
-26 idiv 
-27 istore 
-28 loada 0,5
-29 loada 0,5
-30 iload 
-31 loada 0,3
-32 iload 
-33 iadd 
-34 istore 
-35 loada 0,5
+18 isub 
+19 loada 0,0
+20 loada 0,0
+21 iload 
+22 ipush 2
+23 idiv 
+24 istore 
+25 loada 0,0
+26 loada 0,0
+27 iload 
+28 loada 0,3
+29 iload 
+30 iadd 
+31 istore 
+32 loada 0,0
+33 iload 
+34 call 0
+35 loada 0,0
 36 iload 
-37 call 0
-38 loada 0,0
-39 iload 
-40 isub 
-41 je 43
-42 jmp 50
-43 loada 0,2
-44 loada 0,5
+37 isub 
+38 je 40
+39 jmp 47
+40 loada 0,2
+41 loada 0,0
+42 iload 
+43 istore 
+44 loada 0,2
 45 iload 
-46 istore 
-47 loada 0,2
+46 iret 
+47 loada 0,0
 48 iload 
-49 iret 
-50 loada 0,5
+49 call 0
+50 loada 0,0
 51 iload 
-52 call 0
-53 loada 0,0
-54 iload 
-55 isub 
-56 jl 58
-57 jmp 65
-58 loada 0,3
-59 loada 0,5
-60 iload 
-61 ipush 1
-62 iadd 
-63 istore 
-64 jmp 71
-65 loada 0,4
-66 loada 0,5
-67 iload 
-68 ipush 1
-69 isub 
-70 istore 
-71 jmp 8
-72 loada 0,2
-73 iload 
-74 iret 
-75 ipush 0
-76 iret 
+52 isub 
+53 jl 55
+54 jmp 62
+55 loada 0,3
+56 loada 0,0
+57 iload 
+58 ipush 1
+59 iadd 
+60 istore 
+61 jmp 68
+62 loada 0,4
+63 loada 0,0
+64 iload 
+65 ipush 1
+66 isub 
+67 istore 
+68 jmp 7
+69 loada 0,2
+70 iload 
+71 iret 
+72 ipush 0
+73 iret 
 .F2:
 0 ipush 0
 1 ipush 0
