@@ -11,5 +11,6 @@ while(a < 5){
 	else{
 		print(a*b);
 	}
+	a = a+1;
 }
 }
