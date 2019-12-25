@@ -186,7 +186,7 @@ public class FuncOption {
 		case "bipush":{
 //			System.out.print("01" + " "
 //					+ Integer.toHexString(operands.getFirst(), out));
-			out.write(0x70);
+			out.write(0x01);
 			out.write((byte)Integer.parseInt(Integer.toHexString(operands.getFirst()), 16));
 			break;
 		}

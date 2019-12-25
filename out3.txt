@@ -1,62 +1,52 @@
 .constants:
 0 S "main"
 .start:
+0 ipush 3
+1 ipush 2
+2 ipush 5
+3 imul 
+4 iadd 
+5 loada 0,0
+6 iload 
+7 ipush 2
+8 isub 
+9 loada 0,1
+10 iload 
+11 ipush 1
+12 iadd 
 .functions:
 0 0 0 1
 .F0:
-0 ipush 0
-1 ipush 1
-2 ipush 1
-3 ipush 0
-4 ipush 0
-5 loada 0,0
-6 iscan 
-7 istore 
-8 loada 0,1
-9 iload 
-10 iprint 
-11 loada 0,2
-12 iload 
-13 iprint 
-14 bipush 10
-15 cprint 
-16 loada 0,4
-17 iload 
-18 loada 0,0
-19 iload 
-20 ipush 2
-21 isub 
-22 isub 
-23 jl 25
-24 jge 52
-25 loada 0,3
-26 loada 0,1
-27 iload 
-28 loada 0,2
-29 iload 
-30 iadd 
-31 istore 
-32 loada 0,1
-33 loada 0,2
-34 iload 
-35 istore 
-36 loada 0,2
-37 loada 0,3
-38 iload 
-39 istore 
-40 loada 0,3
-41 iload 
-42 iprint 
-43 bipush 10
-44 cprint 
-45 loada 0,4
-46 loada 0,4
-47 iload 
-48 ipush 1
-49 iadd 
-50 istore 
-51 jmp 16
-52 ipush 0
-53 iret 
-54 ipush 0
-55 iret 
+0 loada 1,0
+1 iload 
+2 loada 1,1
+3 iload 
+4 iadd 
+5 loada 1,0
+6 iload 
+7 loada 1,1
+8 iload 
+9 isub 
+10 loada 1,0
+11 iload 
+12 iprint 
+13 bipush 32
+14 cprint 
+15 loada 1,1
+16 iload 
+17 iprint 
+18 bipush 32
+19 cprint 
+20 loada 0,0
+21 iload 
+22 iprint 
+23 bipush 32
+24 cprint 
+25 loada 0,1
+26 iload 
+27 iprint 
+28 printl 
+29 ipush 0
+30 iret 
+31 ipush 0
+32 iret 
