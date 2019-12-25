@@ -1,0 +1,46 @@
+int a0 = -3;
+int a1 = 0;
+int a2 = 4;
+int a3 = 10;
+int a4 = 11;
+int a5 = 12;
+int a(int i){
+    if(i == 0) return a0;
+    else if(i == 1) return a1;
+    else{
+        if(i == 2) return a2;
+        else{
+            if(i == 3) return a3;
+            else if(i == 4) return a4;
+        }
+    }
+    if(i == 5) return a5;
+}
+int binary(int x,int n)
+{
+  int ans = -1;
+   int l=0, r=n-1;
+   while(l <= r){
+        int m = r -l;
+        m = m /2;
+        m = m + l;
+      if(a(m)==x){
+         ans = m;
+         return ans;
+      }
+      if(a(m)<x){
+         l=m+1;
+      }else{
+         r=m-1;
+      }
+   }
+   return ans;
+}
+int main()
+{
+    int i,key,n;
+    n = 6;
+    scan(key);
+    print(binary(key,n));
+    return 0;
+}
