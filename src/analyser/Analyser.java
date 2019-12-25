@@ -1015,8 +1015,9 @@ public class Analyser {
 	private Error print()  {
 		Token token = nextToken();//Ô¤¶Á
 		if(token.getTokenType() == TokenType.CHARACTER) {
-			int a = Integer.parseInt(token.getValue());
-			funcOpTable.get(funcNum-1).add(new FuncOption("bipush", new Pair(a)));
+//			int a = Integer.parseInt(token.getValue());
+			char a = token.getValue().charAt(0);
+			funcOpTable.get(funcNum-1).add(new FuncOption("bipush", new Pair((int)a)));
 			funcOpTable.get(funcNum-1).add(new FuncOption("cprint", new Pair()));
 		}
 		else if(token.getTokenType() == TokenType.STRING) {

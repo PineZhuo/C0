@@ -1,5 +1,4 @@
 int main()
 {
-print("asdddd");
 print('a');
 }
