@@ -760,6 +760,10 @@ public class Analyser {
 		switch(token.getTokenType()) {
 			case LEFT_BRACE:{
 				level++;
+				while(isVariableHead()) {
+					Error err = varDec();
+					if(err != null) return err;
+				}
 				Error err = stateSeq();
 				if(err != null) return err;
 				token = nextToken();

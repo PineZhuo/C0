@@ -1,0 +1,176 @@
+.constants:
+0 S "a"
+1 S "binary"
+2 S "main"
+.start:
+0 ipush 3
+1 ineg 
+2 ipush 0
+3 ipush 4
+4 ipush 10
+5 ipush 11
+6 ipush 12
+.functions:
+0 0 1 1
+1 1 2 1
+2 2 0 1
+.F0:
+0 loada 0,0
+1 iload 
+2 ipush 0
+3 isub 
+4 je 6
+5 jmp 10
+6 loada 1,0
+7 iload 
+8 iret 
+9 jmp 49
+10 loada 0,0
+11 iload 
+12 ipush 1
+13 isub 
+14 je 16
+15 jmp 20
+16 loada 1,1
+17 iload 
+18 iret 
+19 jmp 49
+20 loada 0,0
+21 iload 
+22 ipush 2
+23 isub 
+24 je 26
+25 jmp 30
+26 loada 1,2
+27 iload 
+28 iret 
+29 jmp 49
+30 loada 0,0
+31 iload 
+32 ipush 3
+33 isub 
+34 je 36
+35 jmp 40
+36 loada 1,3
+37 iload 
+38 iret 
+39 jmp 49
+40 loada 0,0
+41 iload 
+42 ipush 4
+43 isub 
+44 je 46
+45 jmp 49
+46 loada 1,4
+47 iload 
+48 iret 
+49 loada 0,0
+50 iload 
+51 ipush 5
+52 isub 
+53 je 55
+54 jmp 58
+55 loada 1,5
+56 iload 
+57 iret 
+58 ipush 0
+59 iret 
+.F1:
+0 ipush 1
+1 ineg 
+2 ipush 0
+3 loada 0,1
+4 iload 
+5 ipush 1
+6 isub 
+7 ipush 0
+8 loada 0,3
+9 iload 
+10 loada 0,4
+11 iload 
+12 isub 
+13 jle 15
+14 jmp 72
+15 loada 0,5
+16 loada 0,4
+17 iload 
+18 loada 0,3
+19 iload 
+20 isub 
+21 istore 
+22 loada 0,5
+23 loada 0,5
+24 iload 
+25 ipush 2
+26 idiv 
+27 istore 
+28 loada 0,5
+29 loada 0,5
+30 iload 
+31 loada 0,3
+32 iload 
+33 iadd 
+34 istore 
+35 loada 0,5
+36 iload 
+37 call 0
+38 loada 0,0
+39 iload 
+40 isub 
+41 je 43
+42 jmp 50
+43 loada 0,2
+44 loada 0,5
+45 iload 
+46 istore 
+47 loada 0,2
+48 iload 
+49 iret 
+50 loada 0,5
+51 iload 
+52 call 0
+53 loada 0,0
+54 iload 
+55 isub 
+56 jl 58
+57 jmp 65
+58 loada 0,3
+59 loada 0,5
+60 iload 
+61 ipush 1
+62 iadd 
+63 istore 
+64 jmp 71
+65 loada 0,4
+66 loada 0,5
+67 iload 
+68 ipush 1
+69 isub 
+70 istore 
+71 jmp 8
+72 loada 0,2
+73 iload 
+74 iret 
+75 ipush 0
+76 iret 
+.F2:
+0 ipush 0
+1 ipush 0
+2 ipush 0
+3 loada 0,2
+4 ipush 6
+5 istore 
+6 loada 0,1
+7 iscan 
+8 istore 
+9 loada 0,1
+10 iload 
+11 loada 0,2
+12 iload 
+13 call 1
+14 iprint 
+15 printl 
+16 ipush 0
+17 iret 
+18 ipush 0
+19 iret 
