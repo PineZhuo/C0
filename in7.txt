@@ -1,5 +1,5 @@
 int main()
 {
-print("asdddd")
+print("asdddd");
 print('a');
 }
