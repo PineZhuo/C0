@@ -760,10 +760,6 @@ public class Analyser {
 		switch(token.getTokenType()) {
 			case LEFT_BRACE:{
 				level++;
-				while(isVariableHead()) {
-					Error err = varDec();
-					if(err != null) return err;
-				}
 				Error err = stateSeq();
 				if(err != null) return err;
 				token = nextToken();
@@ -889,7 +885,8 @@ public class Analyser {
 		if(token.getTokenType() != TokenType.RIGHT_BRACKET)
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 		
-		err = statement();
+//		err = statement();
+		err = compoundState();
 		if(err != null) return err;
 		
 		token = nextToken();
@@ -902,7 +899,8 @@ public class Analyser {
 		else {
 			funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair()));//if»Áπ˚≈‹¡À£¨æÕ≤ª≈‹else¡À
 			setJmpInstruct();
-			err = statement();
+//			err = statement();
+			err = compoundState();
 			if(err != null) return err;
 			setJmpInstruct();
 		}
@@ -910,7 +908,7 @@ public class Analyser {
 		return null;
 	}
 	
-	//<—≠ª∑”Ôæ‰> -> 'while' '('<◊¥Ã¨>')'<”Ôæ‰>
+	//<—≠ª∑”Ôæ‰> -> 'while' '('<◊¥Ã¨>')'<∫œ≥…”Ôæ‰>
 	private Error loopState()  {
 		Token token = nextToken();
 		if(token.getTokenType() != TokenType.WHILE)
@@ -929,7 +927,8 @@ public class Analyser {
 		if(token.getTokenType() != TokenType.RIGHT_BRACKET)
 			return new Error(token.getPos(), ErrorType.NO_RIGHT_BRACKET);
 		
-		err = statement();
+//		err = statement();
+		err = compoundState();
 		if(err != null) return err;
 		funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair(index1)));
 		setJmpInstruct();
