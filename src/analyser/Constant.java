@@ -1,5 +1,8 @@
 package analyser;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 //常量表的单元
 public class Constant {
 	private int index;
@@ -23,9 +26,10 @@ public class Constant {
 		System.out.println(index + " " + type + " " + "\"" + stringValue + "\"");
 	}
 	
-	public void printBinary() {
+	public void printBinary(DataOutputStream out) throws NumberFormatException, IOException {
 		//因为type只可能是S，所以直接输出
-		System.out.print("00 ");
+//		System.out.print("00 ");
+		out.write(0x00);
 		int len = stringValue.length();
 		String s = Integer.toHexString(len);
 		String s1 = new String();
@@ -37,10 +41,14 @@ public class Constant {
 			case 4: {s1 = s.substring(0, 2); s2 = s.substring(2, 4); break;}
 			default:{break;}
 		}
-		System.out.print(s1 + " " + s2 + " ");
+//		System.out.print(s1 + " " + s2 + " ");
+		out.write((byte)Integer.parseInt(s1, 16));
+		out.write((byte)Integer.parseInt(s2, 16));
 		for(int i = 0; i < len; i++) {
-			System.out.print(Integer.toHexString((int)stringValue.charAt(i)) + " ");
+			out.write((byte)Integer.parseInt(Integer.toHexString((int)stringValue.charAt(i)), 16));
+//			System.out.print(Integer.toHexString((int)stringValue.charAt(i)) + " ");
 		}
+		out.flush();
 	}
 	
 }

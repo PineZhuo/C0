@@ -1,5 +1,6 @@
 package analyser;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -96,47 +97,73 @@ public class Analyser {
 		}
 	}
 	
-	public void outputBinary(String in, String out) throws IOException {
-		runAnalyser(in, out, 2);
+	public void outputBinary(String in, String outFile) throws IOException {
+		runAnalyser(in, outFile, 2);
 		//控制台输出改到文件中
-		file = new File(out);
-		fileOutputStream = new FileOutputStream(file);
-		printStream = new PrintStream(fileOutputStream);
-		System.setOut(printStream);
+		file = new File(outFile);
+//		fileOutputStream = new FileOutputStream(file);
+//		printStream = new PrintStream(fileOutputStream);
+//		System.setOut(printStream);
+//		System.out.print("");
 		//magic
-		System.out.print("43 30 3a 29 ");
+//		System.out.print("43 30 3a 29 ");
+//		FileOutputStream out1 = new FileOutputStream(new FileOutputStream(file, true));
+
+//		FileOutputStream out = new FileOutputStream(file);
+//		byte[] b1 = {0x43, 0x30, 0x3a, 0x29};
+//		for(int i = 0; i < 4; i++) {
+//			out.write(b1[i]);
+//			out.write(0x32);
+//		}
+//		out.flush();
+		DataOutputStream out = new DataOutputStream(new FileOutputStream(outFile, false));
+        byte[] bytes = {0x43, 0x30, 0x3a, 0x29};
+//        	int a1 = 4096;
+//        	byte[] r = new byte[4];
+//        	String s = Integer.toHexString(a1);
+        for(int i = 0; i < 4; i++) {
+//        		out.write((byte)Integer.parseInt(s.substring(j,j+2), 16));
+        	out.write((byte)bytes[i]);
+        	out.flush();
+        }
+        	
+//		}
 		//version
-		System.out.print("00 00 00 01 ");
-		//constants_count
-		printHexCount(constTable.size());
-		//constants
+        byte[] byte2 = {0x00, 0x00, 0x00, 0x01};
+        for(int i = 0; i < 4; i++) {
+        	out.write((byte)byte2[i]);
+        	out.flush();
+        }
+//		//constants_count
+		printHexCount(constTable.size(), out);
+//		//constants
 		for(int i = 0; i < constTable.size(); i++) {
-			constTable.get(i).printBinary();
+			constTable.get(i).printBinary(out);
 		}
-		//start_code
-		//instructions_count
-		printHexCount(startTable.size());
-		//instructions
+//		//start_code
+//		//instructions_count
+		printHexCount(startTable.size(), out);
+//		//instructions
 		for(int i = 0; i < startTable.size(); i++) {
-			startTable.get(i).printBinary();
+			startTable.get(i).printBinary(out);
 		}
-		//functions_count
+//		//functions_count
 		int a = funcTable.size();
-		printHexCount(a);
+		printHexCount(a, out);
 		for(int i = 0; i < a; i++) {
-			funcTable.get(i).printBinary();
+			funcTable.get(i).printBinary(out);
 			//instructions_count
 			int b = funcOpTable.get(i).size();
-			printHexCount(b);
+			printHexCount(b, out);
 			for(int j = 0; j < b; j++) {
-				funcOpTable.get(i).get(j).printBinary();
+				funcOpTable.get(i).get(j).printBinary(out);
 			}
 		}
-		
+		out.close();
 		
 	}
 	
-	private void printHexCount(int count) {
+	private void printHexCount(int count, DataOutputStream out) throws NumberFormatException, IOException {
 		String s = Integer.toHexString(count);
 		String s1 = new String();
 		String s2 = new String();
@@ -147,7 +174,9 @@ public class Analyser {
 			case 4: {s1 = s.substring(0, 2); s2 = s.substring(2, 4); break;}
 			default:{break;}
 		}
-		System.out.print(s1 + " " + s2 + " ");
+		out.write((byte)Integer.parseInt(s1, 16));
+		out.write((byte)Integer.parseInt(s2, 16));
+		out.flush();
 	}
 	
 	// <程序> -> {变量声明}{函数定义}

@@ -1,1 +1,52 @@
-43 30 3a 29 00 00 00 01 00 01 00 00 04 6d 61 69 6e 00 00 00 01 00 00 00 00 00 01 00 2e 02 00 00 00 00 02 00 00 00 00 0a 00 00 00 00 00 00 10 02 00 00 00 0a 34 76 00 08 70 00 2d 0a 00 00 00 00 00 00 10 02 00 00 00 05 34 74 00 0e 70 00 17 0a 00 00 00 00 00 01 0a 00 00 00 00 00 00 10 20 0a 00 00 00 00 00 01 10 a0 af 70 00 22 0a 00 00 00 00 00 01 0a 00 00 00 00 00 00 10 0a 00 00 00 00 00 00 10 30 20 0a 00 00 00 00 00 01 10 a0 af 0a 00 00 00 00 00 00 0a 00 00 00 00 00 00 10 02 00 00 00 02 30 20 0a 00 00 00 00 00 00 10 a0 af 70 00 02 88 
+.constants:
+0 S "main"
+.start:
+.functions:
+0 0 0 1
+.F0:
+0 ipush 0
+1 ipush 0
+2 loada 0,0
+3 iload 
+4 ipush 10
+5 isub 
+6 jle 8
+7 jmp 45
+8 loada 0,0
+9 iload 
+10 ipush 5
+11 isub 
+12 jge 14
+13 jmp 23
+14 loada 0,1
+15 loada 0,0
+16 iload 
+17 istore 
+18 loada 0,1
+19 iload 
+20 iprint 
+21 printl 
+22 jmp 34
+23 loada 0,1
+24 loada 0,0
+25 iload 
+26 loada 0,0
+27 iload 
+28 iadd 
+29 istore 
+30 loada 0,1
+31 iload 
+32 iprint 
+33 printl 
+34 loada 0,0
+35 loada 0,0
+36 iload 
+37 ipush 2
+38 iadd 
+39 istore 
+40 loada 0,0
+41 iload 
+42 iprint 
+43 printl 
+44 jmp 2
+45 ret 

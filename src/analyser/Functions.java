@@ -1,5 +1,8 @@
 package analyser;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 public class Functions {
 	int index;
 	int name_index;
@@ -16,13 +19,13 @@ public class Functions {
 		System.out.println(index + " " + name_index + " " + params_size + " " + level);
 	}
 	
-	public void printBinary() {
-		printHexNum(name_index);
-		printHexNum(params_size);
-		printHexNum(level);
+	public void printBinary(DataOutputStream out) throws NumberFormatException, IOException {
+		printHexNum(name_index, out);
+		printHexNum(params_size, out);
+		printHexNum(level, out);
 	}
 	
-	private void printHexNum(int num) {
+	private void printHexNum(int num,DataOutputStream out) throws NumberFormatException, IOException {
 		String s = Integer.toHexString(num);
 		String s1 = new String();
 		String s2 = new String();
@@ -33,6 +36,8 @@ public class Functions {
 			case 4: {s1 = s.substring(0, 2); s2 = s.substring(2, 4); break;}
 			default:{break;}
 		}
-		System.out.print(s1 + " " + s2 + " ");
+		out.write((byte)Integer.parseInt(s1, 16));
+		out.write((byte)Integer.parseInt(s2, 16));
+		out.flush();
 	}
 }

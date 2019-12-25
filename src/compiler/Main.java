@@ -37,7 +37,7 @@ public class Main {
 			}
 		}
 		else if(len == 2){
-			if(args[0].equals("-s")) {
+			if(args[0].equals("-s") || args[0].equals("-c")) {
 				inputFile = args[1];
 			}
 			else {

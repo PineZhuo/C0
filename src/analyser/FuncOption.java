@@ -1,6 +1,9 @@
 package analyser;
 
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import compiler.Pair;
 
 public class FuncOption {
@@ -42,142 +45,169 @@ public class FuncOption {
 		return operands.size();
 	}
 	
-	public void printBinary() {
+	public void printBinary(DataOutputStream out) throws IOException {
 		switch(opcode) {
 		//这里只列出我用到的
 		//ipush
 		case "ipush":{
-			System.out.print("02" + " ");
-			printHexEight(operands.getFirst());
+			out.write(0x02);
+			printHexEight(operands.getFirst(), out);
 			break;
 		}
 		//loada
 		case "loada":{
-			System.out.print("0a" + " ");
-			printHexFour(operands.getFirst());
-			printHexEight(operands.getSecond());
+//			System.out.print("0a" + " ");
+			out.write(0x0a);
+			printHexFour(operands.getFirst(), out);
+			printHexEight(operands.getSecond(), out);
 			break;
 		}
 		//iload
 		case "iload":{
-			System.out.print("10" + " ");
+//			System.out.print("10" + " ");
+			out.write(0x10);
 			break;
 		}
 		//istore
 		case "istore":{
-			System.out.print("20" + " ");
+//			System.out.print("20" + " ");
+			out.write(0x20);
 			break;
 		}
 		//isub
 		case "isub":{
-			System.out.print("34" + " ");
+//			System.out.print("34" + " ");
+			out.write(0x34);
 			break;
 		}
 		//iadd
 		case "iadd":{
-			System.out.print("30" + " ");
+//			System.out.print("30" + " ");
+			out.write(0x30);
 			break;
 		}
 		//imul
 		case "imul":{
-			System.out.print("38" + " ");
+//			System.out.print("38" + " ");
+			out.write(0x38);
 			break;
 		}
 		//idiv
 		case "idiv":{
-			System.out.print("3c" + " ");
+//			System.out.print("3c" + " ");
+			out.write(0x3c);
 			break;
 		}
 		//ineg
 		case "ineg":{
-			System.out.print("40" + " ");
+//			System.out.print("40" + " ");
+			out.write(0x40);
 			break;
 		}
 		//jmp
 		case "jmp":{
-			System.out.print("70" + " " );
-			printHexFour(operands.getFirst());
+//			System.out.print("70" + " " );
+			out.write(0x70);
+			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "je":{
-			System.out.print("71" + " ");
-			printHexFour(operands.getFirst());
+//			System.out.print("71" + " ");
+			out.write(0x71);
+			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "jne":{
-			System.out.print("72" + " ");
-			printHexFour(operands.getFirst());
+//			System.out.print("72" + " ");
+			out.write(0x72);
+			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "jl":{
-			System.out.print("73" + " ");
-			printHexFour(operands.getFirst());
+//			System.out.print("73" + " ");
+			out.write(0x73);
+			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "jge":{
-			System.out.print("74" + " ");
-			printHexFour(operands.getFirst());
+//			System.out.print("74" + " ");
+			out.write(0x74);
+			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "jg":{
-			System.out.print("75" + " ");
-			printHexFour(operands.getFirst());
+//			System.out.print("75" + " ");
+			out.write(0x75);
+			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "jle":{
-			System.out.print("76" + " ");
-			printHexFour(operands.getFirst());
+//			System.out.print("76" + " ");
+			out.write(0x76);
+			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "ret":{
-			System.out.print("88" + " ");
+//			System.out.print("88" + " ");
+			out.write(0x88);
 			break;
 		}
 		case "iret":{
-			System.out.print("89" + " ");
+//			System.out.print("89" + " ");
+			out.write(0x89);
 			break;
 		}
 		case "call":{
-			System.out.print("80" + " ");
-			printHexFour(operands.getFirst());
+//			System.out.print("80" + " ");
+			out.write(0x80);
+			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "pop":{
-			System.out.print("04" + " ");
+//			System.out.print("04" + " ");
+			out.write(0x04);
 			break;
 		}
 		case "iscan":{
-			System.out.print("b0" + " ");
+//			System.out.print("b0" + " ");
+			out.write(0xb0);
 			break;
 		}
 		case "iprint":{
-			System.out.print("a0" + " ");
+//			System.out.print("a0" + " ");
+			out.write(0xa0);
 			break;
 		}
 		case "cprint":{
-			System.out.print("a2" + " ");
+//			System.out.print("a2" + " ");
+			out.write(0xa2);
 			break;
 		}
 		case "bipush":{
-			System.out.print("01" + " "
-					+ Integer.toHexString(operands.getFirst()));
+//			System.out.print("01" + " "
+//					+ Integer.toHexString(operands.getFirst(), out));
+			out.write(0x70);
+			out.write((byte)Integer.parseInt(Integer.toHexString(operands.getFirst()), 16));
 			break;
 		}
 		case "printl":{
-			System.out.print("af" + " ");
+//			System.out.print("af" + " ");
+			out.write(0xaf);
 			break;
 		}
 		case "sprint":{
-			System.out.print("a3" + " ");
+//			System.out.print("a3" + " ");
+			out.write(0xa3);
 			break;
 		}
 		default:{
 			break;
 		}
 	}
+		out.flush();
 	}
 	
-	private void printHexFour(int num) {
+	private void printHexFour(int num, DataOutputStream out) throws NumberFormatException, IOException {
 		String s = Integer.toHexString(num);
 		String s1 = new String();
 		String s2 = new String();
@@ -188,10 +218,12 @@ public class FuncOption {
 			case 4: {s1 = s.substring(0, 2); s2 = s.substring(2, 4); break;}
 			default:{break;}
 		}
-		System.out.print(s1 + " " + s2 + " ");
+		out.write((byte)Integer.parseInt(s1, 16));
+		out.write((byte)Integer.parseInt(s2, 16));
+		out.flush();
 	}
 	
-	private void printHexEight(int num) {
+	private void printHexEight(int num, DataOutputStream out) throws NumberFormatException, IOException {
 		String s = Integer.toHexString(num);
 		String s1 = new String();
 		String s2 = new String();
@@ -208,6 +240,11 @@ public class FuncOption {
 		case 8: {s1 = s.substring(0,2); s2 = s.substring(2, 4); s3 = s.substring(4, 6); s4 = s.substring(6, 8);break;}
 		default:break;
 		}
-		System.out.print(s1 + " " + s2 + " " + s3 + " " + s4 + " ");
+//		System.out.print(s1 + " " + s2 + " " + s3 + " " + s4 + " ");
+		out.write((byte)Integer.parseInt(s1, 16));
+		out.write((byte)Integer.parseInt(s2, 16));
+		out.write((byte)Integer.parseInt(s3, 16));
+		out.write((byte)Integer.parseInt(s4, 16));
+		out.flush();
 	}
 }

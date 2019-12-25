@@ -1,6 +1,9 @@
 package analyser;
 
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import compiler.Pair;
 
 public class Start {
@@ -25,63 +28,65 @@ public class Start {
 		}
 	}
 	
-	public void printBinary() {
+	public void printBinary(DataOutputStream out) throws IOException {
 		switch(opcode) {
 			//这里只列出我用到的
 			//ipush
 			case "ipush":{
-				System.out.print("02" + " ");
-				printHexEight(operands.getFirst());
+//				System.out.print("02" + " ");
+				out.write(0x02);
+				printHexEight(operands.getFirst(), out);
 				break;
 			}
 			//loada
 			case "loada":{
-				System.out.print("0a" + " ");
-				printHexFour(operands.getFirst());
-				printHexEight(operands.getSecond());
+				out.write(0x0a);
+				printHexFour(operands.getFirst(), out);
+				printHexEight(operands.getSecond(), out);
 				break;
 			}
 			//iload
 			case "iload":{
-				System.out.print("10" + " ");
+				out.write(0x10);
 				break;
 			}
 			//istore
 			case "istore":{
-				System.out.print("20" + " ");
+				out.write(0x20);
 				break;
 			}
 			//isub
 			case "isub":{
-				System.out.print("34" + " ");
+				out.write(0x34);
 				break;
 			}
 			//iadd
 			case "iadd":{
-				System.out.print("30" + " ");
+				out.write(0x30);
 				break;
 			}
 			//imul
 			case "imul":{
-				System.out.print("38" + " ");
+				out.write(0x38);
 				break;
 			}
 			//idiv
 			case "idiv":{
-				System.out.print("3c" + " ");
+				out.write(0x3c);
 				break;
 			}
 			//ineg
 			case "ineg":{
-				System.out.print("40" + " ");
+				out.write(0x40);
 				break;
 			}
 			default:{
 				break;
 			}
 		}
+		out.flush();
 	}
-	private void printHexFour(int num) {
+	private void printHexFour(int num, DataOutputStream out) throws NumberFormatException, IOException {
 		String s = Integer.toHexString(num);
 		String s1 = new String();
 		String s2 = new String();
@@ -92,10 +97,12 @@ public class Start {
 			case 4: {s1 = s.substring(0, 2); s2 = s.substring(2, 4); break;}
 			default:{break;}
 		}
-		System.out.print(s1 + " " + s2 + " ");
+		out.write((byte)Integer.parseInt(s1, 16));
+		out.write((byte)Integer.parseInt(s2, 16));
+		out.flush();
 	}
 	
-	private void printHexEight(int num) {
+	private void printHexEight(int num, DataOutputStream out) throws NumberFormatException, IOException {
 		String s = Integer.toHexString(num);
 		String s1 = new String();
 		String s2 = new String();
@@ -112,7 +119,12 @@ public class Start {
 		case 8: {s1 = s.substring(0,2); s2 = s.substring(2, 4); s3 = s.substring(4, 6); s4 = s.substring(6, 8);break;}
 		default:break;
 		}
-		System.out.print(s1 + " " + s2 + " " + s3 + " " + s4 + " ");
+//		System.out.print(s1 + " " + s2 + " " + s3 + " " + s4 + " ");
+		out.write((byte)Integer.parseInt(s1, 16));
+		out.write((byte)Integer.parseInt(s2, 16));
+		out.write((byte)Integer.parseInt(s3, 16));
+		out.write((byte)Integer.parseInt(s4, 16));
+		out.flush();
 	}
 	
 	
