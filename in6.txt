@@ -20,9 +20,8 @@ int binary(int x,int n)
 {
   int ans = -1;
    int l=0, r=n-1;
-int m;
    while(l <= r){
-        m = r -l;
+        int m = r -l;
         m = m /2;
         m = m + l;
       if(a(m)==x){
