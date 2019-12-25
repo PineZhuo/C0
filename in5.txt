@@ -3,8 +3,8 @@ void main()
     int a = 0;
     int b;
     while(a <= 10){
-		if(a >= 5){
-            b = a*a;
+	if(a >= 5){
+            b = a;
             print(b);
         }
         else{

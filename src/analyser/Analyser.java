@@ -50,43 +50,104 @@ public class Analyser {
 	PrintStream printStream;
 	
 	
-	public void runAnalyser(String in, String out) throws IOException  {
+	public void runAnalyser(String in, String out, int fileType) throws IOException  {
 		tokenList = tz.getTokenList(in);
 		if(tokenList == null) //说明词法分析出错了
 			return ;
 		
+		Error err = Program();
+		if(err != null) {
+			err.printError();
+			return ;
+		}
+			
+		if(!isHaveMain()) {
+			System.out.println("Error! There is not main function!");
+			return ;
+		}
+		
+		if(fileType == 1) {
+			//控制台输出改到文件中
+			file = new File(out);
+			fileOutputStream = new FileOutputStream(file);
+			printStream = new PrintStream(fileOutputStream);
+			System.setOut(printStream);
+			System.out.println(".constants:");
+			for(int i = 0; i < constTable.size(); i++) {
+				constTable.get(i).print();
+			}
+			System.out.println(".start:");
+			for(int i = 0; i < startTable.size(); i++) {
+				System.out.print(i + " ");
+				startTable.get(i).print();
+			}
+			System.out.println(".functions:");
+			for(int i = 0; i < funcTable.size(); i++) {
+				funcTable.get(i).print();
+			}
+//			System.out.println(funcOpTable.get(0));
+			for(int i = 0; i < funcNum; i++) {
+				System.out.println(".F" + i + ":");
+				for(int j = 0; j < funcOpTable.get(i).size(); j++) {
+					System.out.print(j + " ");
+					funcOpTable.get(i).get(j).print();
+				}
+			}
+		}
+	}
+	
+	public void outputBinary(String in, String out) throws IOException {
+		runAnalyser(in, out, 2);
 		//控制台输出改到文件中
 		file = new File(out);
 		fileOutputStream = new FileOutputStream(file);
 		printStream = new PrintStream(fileOutputStream);
 		System.setOut(printStream);
-		
-		Error err = Program();
-		if(err != null)
-			err.printError();
-		if(!isHaveMain())
-			System.out.println("Error! There is not main function!");
-		System.out.println(".constants:");
+		//magic
+		System.out.print("43 30 3a 29 ");
+		//version
+		System.out.print("00 00 00 01 ");
+		//constants_count
+		printHexCount(constTable.size());
+		//constants
 		for(int i = 0; i < constTable.size(); i++) {
-			constTable.get(i).print();
+			constTable.get(i).printBinary();
 		}
-		System.out.println(".start:");
+		//start_code
+		//instructions_count
+		printHexCount(startTable.size());
+		//instructions
 		for(int i = 0; i < startTable.size(); i++) {
-			System.out.print(i + " ");
-			startTable.get(i).print();
+			startTable.get(i).printBinary();
 		}
-		System.out.println(".functions:");
-		for(int i = 0; i < funcTable.size(); i++) {
-			funcTable.get(i).print();
-		}
-//		System.out.println(funcOpTable.get(0));
-		for(int i = 0; i < funcNum; i++) {
-			System.out.println(".F" + i + ":");
-			for(int j = 0; j < funcOpTable.get(i).size(); j++) {
-				System.out.print(j + " ");
-				funcOpTable.get(i).get(j).print();
+		//functions_count
+		int a = funcTable.size();
+		printHexCount(a);
+		for(int i = 0; i < a; i++) {
+			funcTable.get(i).printBinary();
+			//instructions_count
+			int b = funcOpTable.get(i).size();
+			printHexCount(b);
+			for(int j = 0; j < b; j++) {
+				funcOpTable.get(i).get(j).printBinary();
 			}
 		}
+		
+		
+	}
+	
+	private void printHexCount(int count) {
+		String s = Integer.toHexString(count);
+		String s1 = new String();
+		String s2 = new String();
+		switch(s.length()) {
+			case 1: {s1 = "00"; s2 = "0" + s; break;}
+			case 2: {s1 = "00"; s2 = s; break;}
+			case 3: {s1 = "0" + s.substring(0, 1); s2 = s.substring(1, 3); break;}
+			case 4: {s1 = s.substring(0, 2); s2 = s.substring(2, 4); break;}
+			default:{break;}
+		}
+		System.out.print(s1 + " " + s2 + " ");
 	}
 	
 	// <程序> -> {变量声明}{函数定义}
@@ -895,9 +956,8 @@ public class Analyser {
 		token = nextToken();
 		if(token.getTokenType() != TokenType.SEMICOLON)
 			return new Error(token.getPos(), ErrorType.NO_SEMICOLON_ERROR);
-		//输出空格
-		funcOpTable.get(funcNum-1).add(new FuncOption("bipush", new Pair('\n')));
-		funcOpTable.get(funcNum-1).add(new FuncOption("cprint", new Pair()));
+		//输出换行
+		funcOpTable.get(funcNum-1).add(new FuncOption("printl", new Pair()));
 		
 		return null;
 	}
@@ -906,24 +966,40 @@ public class Analyser {
 	private Error printList()  {
 		Error err = print();
 		if(err != null) return err;
-		funcOpTable.get(funcNum-1).add(new FuncOption("iprint", new Pair()));
 		Token token = nextToken();
 		while(token.getTokenType() == TokenType.COMMA) {
 			funcOpTable.get(funcNum-1).add(new FuncOption("bipush", new Pair(32)));
 			funcOpTable.get(funcNum-1).add(new FuncOption("cprint", new Pair()));
 			err = print();
 			if(err != null) return err;
-			funcOpTable.get(funcNum-1).add(new FuncOption("iprint", new Pair()));
 			token = nextToken();
 		}
 		unreadToken();
 		return null;
 	}
 	
-	//<输出> -> <表达式>
+	//<输出> -> <表达式> | <字符> | <字符串>
 	private Error print()  {
-		Error err = expression();
-		if(err != null) return err;
+		Token token = nextToken();//预读
+		if(token.getTokenType() == TokenType.CHARACTER) {
+			int a = Integer.parseInt(token.getValue());
+			funcOpTable.get(funcNum-1).add(new FuncOption("bipush", new Pair(a)));
+			funcOpTable.get(funcNum-1).add(new FuncOption("cprint", new Pair()));
+		}
+		else if(token.getTokenType() == TokenType.STRING) {
+			//常量表
+			constTable.add(new Constant(constIndex, "S", token.getValue()));
+			funcOpTable.get(funcNum-1).add(new FuncOption("loadc", new Pair(constIndex)));
+			constIndex++;
+			funcOpTable.get(funcNum-1).add(new FuncOption("sprint", new Pair()));
+		}
+		else {
+			unreadToken();
+			Error err = expression();
+			if(err != null) return err;
+			funcOpTable.get(funcNum-1).add(new FuncOption("iprint", new Pair()));
+		}
+		
 		return null;
 	}
 	

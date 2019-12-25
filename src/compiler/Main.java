@@ -12,11 +12,12 @@ public class Main {
 		
 		int len = args.length;
 		String inputFile = new String();
-		String outputFile = new String();
+		String outputFile = new String("out");
 		if(len == 0) {
 			System.out.println("Usage: cc0 [options] input [-o file]" + 
 					" " +"请选择操作: \r\n"+
 					"  -s        将输入的 c0 源代码翻译为文本汇编文件\r\n" + 
+					"  -c        将输入的 c0 源代码翻译为二进制目标文件\r\n" +
 					"  -h        显示关于编译器使用的帮助\r\n" + 
 					"  -o file   输出到指定的文件 file");
 			return;
@@ -45,7 +46,7 @@ public class Main {
 			}
 		}
 		else if(len == 4) {
-			if(args[0].equals("-s") && args[2].equals("-o")) {
+			if((args[0].equals("-s") || args[0].equals("-c")) && args[2].equals("-o")) {
 				inputFile = args[1];
 				outputFile = args[3];
 			}
@@ -63,7 +64,12 @@ public class Main {
 		try {
 //			tz.runTokenizer();
 //			as.runAnalyser("d://in.txt", "d://out.txt");
-			as.runAnalyser(inputFile, outputFile);
+			if(args[0].equals("-s")) {//文本文件
+				as.runAnalyser(inputFile, outputFile, 1);
+			}
+			else if(args[0].equals("-c")) {
+				as.outputBinary(inputFile, outputFile);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
