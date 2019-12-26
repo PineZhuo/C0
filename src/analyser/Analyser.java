@@ -554,7 +554,7 @@ public class Analyser {
 		indexTable.add(new IndexTable(name, it, paralist));
 		funcOpTable.add(new ArrayList<FuncOption>());
 		funcNum ++;
-		err = compoundState(true);
+		err = compoundState();
 		if(err != null) return err;
 		//无脑加返回指令
 		if(it == IdentiType.VOID) {
@@ -705,7 +705,7 @@ public class Analyser {
 	}
 	
 	//<合成语句> -> '{' {<变量声明>}<语句序列> '}'
-	private Error compoundState(boolean isFun)  {
+	private Error compoundState()  {
 		Token token = nextToken();
 		if(token.getTokenType() != TokenType.LEFT_BRACE)
 			return new Error(token.getPos(), ErrorType.NO_LEFT_BRACE);
@@ -736,12 +736,12 @@ public class Analyser {
 			popNum ++;
 			symbolTable.pop();
 		}
-		if(!isFun) {
-			while(popNum >= 0) {
-				funcOpTable.get(funcNum-1).add(new FuncOption("pop", new Pair()));
-				popNum--;
-			}
-		}
+//		if(!isFun) {
+//			while(popNum >= 0) {
+//				funcOpTable.get(funcNum-1).add(new FuncOption("pop", new Pair()));
+//				popNum--;
+//			}
+//		}
 		
 		level--;
 		
@@ -894,16 +894,16 @@ public class Analyser {
 		if(token.getTokenType() != TokenType.RIGHT_BRACKET)
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 		
-//		err = statement();
-		token = nextToken();
-		if(token.getTokenType() == TokenType.LEFT_BRACE) {
-			unreadToken();
-			err = compoundState(false);
-		}
-		else {
-			unreadToken();
-			err = statement();
-		}
+		err = statement();
+//		token = nextToken();
+//		if(token.getTokenType() == TokenType.LEFT_BRACE) {
+//			unreadToken();
+//			err = compoundState();
+//		}
+//		else {
+//			unreadToken();
+//			err = statement();
+//		}
 			
 		
 		if(err != null) return err;
@@ -918,16 +918,16 @@ public class Analyser {
 		else {
 			funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair()));//if如果跑了，就不跑else了
 			setJmpInstruct();
-//			err = statement();
-			token = nextToken();
-			if(token.getTokenType() == TokenType.LEFT_BRACE) {
-				unreadToken();
-				err = compoundState(false);
-			}
-			else {
-				unreadToken();
-				err = statement();
-			}
+			err = statement();
+//			token = nextToken();
+//			if(token.getTokenType() == TokenType.LEFT_BRACE) {
+//				unreadToken();
+//				err = compoundState();
+//			}
+//			else {
+//				unreadToken();
+//				err = statement();
+//			}
 			if(err != null) return err;
 			setJmpInstruct();
 		}
@@ -954,16 +954,16 @@ public class Analyser {
 		if(token.getTokenType() != TokenType.RIGHT_BRACKET)
 			return new Error(token.getPos(), ErrorType.NO_RIGHT_BRACKET);
 		
-//		err = statement();
-		token = nextToken();
-		if(token.getTokenType() == TokenType.LEFT_BRACE) {
-			unreadToken();
-			err = compoundState(false);
-		}
-		else {
-			unreadToken();
-			err = statement();
-		}
+		err = statement();
+//		token = nextToken();
+//		if(token.getTokenType() == TokenType.LEFT_BRACE) {
+//			unreadToken();
+//			err = compoundState();
+//		}
+//		else {
+//			unreadToken();
+//			err = statement();
+//		}
 		if(err != null) return err;
 		funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair(index1)));
 		setJmpInstruct();
@@ -1345,11 +1345,11 @@ public class Analyser {
 			if(sb.getName().equals(name)) {
 				//获得这个标识符的层级
 				int level2 = sb.getLevel();
-				if(level2 != 0) {
+				if(level2 == 1) {
 					level1 = 0;
 					while(symbolTable.size() != 0) {
 						Symbol sb1 = symbolTable.peek();
-						if(sb1.getLevel() >= 1) {
+						if(sb1.getLevel() == 1) {
 							index1 ++;
 							symbolTable.pop();
 							tmp.push(sb1);
@@ -1359,7 +1359,7 @@ public class Analyser {
 						}
 					}
 				}
-				else {
+				else if(level2 == 0) {
 					if(this.level == 0)
 						level1 = 0;
 					else

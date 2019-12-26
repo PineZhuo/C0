@@ -62,6 +62,11 @@ public class FuncOption {
 			printHexEight(operands.getSecond(), out);
 			break;
 		}
+		case "loadc":{
+			out.write(0x09);
+			printHexFour(operands.getFirst(), out);
+			break;
+		}
 		//iload
 		case "iload":{
 //			System.out.print("10" + " ");
