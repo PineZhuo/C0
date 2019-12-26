@@ -1,9 +1,16 @@
-const int a1 = 3+2*5;
-int a2 = a1-2, a3 = a2+1;
-int main()
-{
-    const int a3 = a1+a2, a4=a1-a2;
-    print(a1, a2, a3, a4);
-    
-    return 0;
+void hanoi(int n, int a, int b, int c) {
+	if (n == 1) {
+		print(a, "->", c);
+	}
+	else {
+		hanoi(n-1, a, c, b);
+		print(a, "->", c);
+		hanoi(n-1, b, a, c);
+		
+	}
+}
+
+int main() {
+	hanoi(3, 1, 2, 3);
+	return 0;
 }
