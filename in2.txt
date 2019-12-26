@@ -6,5 +6,6 @@ int fun(int num) {
 }
 
 int main() {
-    return fun(-123456);
+	print(fun(-123456));
+    return 0;
 }
