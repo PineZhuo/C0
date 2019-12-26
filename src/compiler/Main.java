@@ -25,7 +25,7 @@ public class Main {
 		else if(len == 1) {
 			if(args[0].equals("-h")) {
 				System.out.println("Usage: cc0 [options] input [-o file]" + 
-						" " +"请选择操作: "+
+						" " + "请选择操作: "+
 						"  -s        将输入的 c0 源代码翻译为文本汇编文件\r\n" + 
 						"  -h        显示关于编译器使用的帮助\r\n" + 
 						"  -o file   输出到指定的文件 file");

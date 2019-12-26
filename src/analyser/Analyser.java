@@ -739,6 +739,7 @@ public class Analyser {
 		if(!isFun) {
 			while(popNum >= 0) {
 				funcOpTable.get(funcNum-1).add(new FuncOption("pop", new Pair()));
+				popNum--;
 			}
 		}
 		
@@ -748,7 +749,7 @@ public class Analyser {
 	}
 	
 	//<Óï¾äÐòÁÐ> -> {<Óï¾ä>}
-	private Error stateSeq()  {
+	private Error stateSeq() {
 		Token token = nextToken();
 		while(isStatementHead(token)) {
 			unreadToken();
@@ -1433,9 +1434,6 @@ public class Analyser {
 			return false;
 		}
 	}
-	
-	
-	
 	
 }
 
