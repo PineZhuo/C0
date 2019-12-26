@@ -1,5 +1,9 @@
 
 int main()
 {
-	print("helloworld\n");
+print('\x60');
+print('\n');
+print("\"");
+print("\\");
+print("\n");
 }

@@ -1053,7 +1053,12 @@ public class Analyser {
 		Token token = nextToken();//Ô¤¶Á
 		if(token.getTokenType() == TokenType.CHARACTER) {
 //			int a = Integer.parseInt(token.getValue());
-			char a = token.getValue().charAt(0);
+			char a;
+//			System.out.println(token.getValue());
+//			if(token.getValue().length() == 1) {
+				a = token.getValue().charAt(0);
+//			}
+			
 			funcOpTable.get(funcNum-1).add(new FuncOption("bipush", new Pair((int)a)));
 			funcOpTable.get(funcNum-1).add(new FuncOption("cprint", new Pair()));
 		}

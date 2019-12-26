@@ -436,7 +436,7 @@ public class Tokenizer {
 					}
 					break;
 				}
-				case CHAR_LITER2_STATE:{// 'a    '\"   '\xab
+				case CHAR_LITER2_STATE:{// 'a    '\'   '\xab
 					if(ch == null) {
 						return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
 					}
@@ -448,6 +448,7 @@ public class Tokenizer {
 					}
 				}
 				case CHAR_ESCAPE_LITER_STATE:{// '\
+					
 					if(ch == null) {
 						return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
 					}
@@ -461,6 +462,7 @@ public class Tokenizer {
 						}
 						else if(ch == 'n') {
 							token += '\n';
+							
 							currentState = DFAState.CHAR_LITER2_STATE;
 						}
 						else if(ch == 't') {
@@ -685,7 +687,7 @@ public class Tokenizer {
 	//判断一个字符是不是 <escape-seq> 里定义的
 	private boolean isEscape(char ch) {
 		if(ch == '\\' || ch == '\'' || ch == '\"'
-				|| ch == '\n' || ch == '\r' || ch == '\t'
+				|| ch == 'n' || ch == 'r' || ch == 't'
 				|| ch == 'x') {
 			return true;
 		}
