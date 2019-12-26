@@ -25,33 +25,33 @@
 15 loadc 2
 16 sprint 
 17 printl 
-18 loada 0,0
+18 loada 0,1
 19 iload 
 20 iprint 
 21 printl 
-22 loada 0,0
+22 loada 0,1
 23 iload 
 24 ipush 5
 25 isub 
 26 jge 28
 27 jmp 50
 28 ipush 2
-29 loada 0,0
+29 loada 0,1
 30 iload 
 31 imul 
 32 loadc 3
 33 sprint 
 34 printl 
-35 loada 0,0
+35 loada 0,2
 36 iload 
 37 iprint 
 38 printl 
 39 loada 0,0
 40 iload 
-41 loada 0,0
+41 loada 0,1
 42 iload 
 43 iadd 
-44 loada 0,0
+44 loada 0,2
 45 iload 
 46 iadd 
 47 iprint 
@@ -59,7 +59,7 @@
 49 jmp 57
 50 loada 0,0
 51 iload 
-52 loada 0,0
+52 loada 0,1
 53 iload 
 54 imul 
 55 iprint 

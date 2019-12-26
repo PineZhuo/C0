@@ -1,16 +1,16 @@
 void main()
 {
 int a = 1;
-print("a:");
-print(a);
+print("a:", a);
+//print(a);
 while(a < 5){
 	int b = 10;
-	print("b:");
-	print(b);
+	print("b:", b);
+//	print(b);
 	if(b >= 5){
 		int c = 2*b;
-		print("c:");
-		print(c);
+		print("c:", c);
+		//print(c);
 		print(a+b+c);
 	}
 	else{

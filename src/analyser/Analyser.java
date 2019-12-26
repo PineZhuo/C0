@@ -554,7 +554,7 @@ public class Analyser {
 		indexTable.add(new IndexTable(name, it, paralist));
 		funcOpTable.add(new ArrayList<FuncOption>());
 		funcNum ++;
-		err = compoundState();
+		err = compoundState(true);
 		if(err != null) return err;
 		//无脑加返回指令
 		if(it == IdentiType.VOID) {
@@ -705,7 +705,7 @@ public class Analyser {
 	}
 	
 	//<合成语句> -> '{' {<变量声明>}<语句序列> '}'
-	private Error compoundState()  {
+	private Error compoundState(boolean isFun)  {
 		Token token = nextToken();
 		if(token.getTokenType() != TokenType.LEFT_BRACE)
 			return new Error(token.getPos(), ErrorType.NO_LEFT_BRACE);
@@ -730,10 +730,18 @@ public class Analyser {
 			return new Error(token.getPos(), ErrorType.NO_RIGHT_BRACE);
 		
 		//当前层级的全都出栈
+		int popNum = 0;
 		while(symbolTable.peek().getLevel() == level) {
 //			symbolTable.peek().printSymbol();
+			popNum ++;
 			symbolTable.pop();
 		}
+		if(!isFun) {
+			while(popNum >= 0) {
+				funcOpTable.get(funcNum-1).add(new FuncOption("pop", new Pair()));
+			}
+		}
+		
 		level--;
 		
 		return null;
@@ -889,7 +897,7 @@ public class Analyser {
 		token = nextToken();
 		if(token.getTokenType() == TokenType.LEFT_BRACE) {
 			unreadToken();
-			err = compoundState();
+			err = compoundState(false);
 		}
 		else {
 			unreadToken();
@@ -913,7 +921,7 @@ public class Analyser {
 			token = nextToken();
 			if(token.getTokenType() == TokenType.LEFT_BRACE) {
 				unreadToken();
-				err = compoundState();
+				err = compoundState(false);
 			}
 			else {
 				unreadToken();
@@ -949,7 +957,7 @@ public class Analyser {
 		token = nextToken();
 		if(token.getTokenType() == TokenType.LEFT_BRACE) {
 			unreadToken();
-			err = compoundState();
+			err = compoundState(false);
 		}
 		else {
 			unreadToken();
@@ -999,9 +1007,11 @@ public class Analyser {
 		Token token = nextToken();
 		if(token.getTokenType() != TokenType.PRINT)
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
+		
 		token = nextToken();
 		if(token.getTokenType() != TokenType.LEFT_BRACKET)
 			return new Error(token.getPos(), ErrorType.NO_LEFT_BRACKET);
+		
 		token = nextToken();
 		if(token.getTokenType() != TokenType.RIGHT_BRACKET) {
 			unreadToken();
@@ -1011,6 +1021,7 @@ public class Analyser {
 			if(token.getTokenType() != TokenType.RIGHT_BRACKET)
 				return new Error(token.getPos(), ErrorType.NO_RIGHT_BRACKET);
 		}
+		
 		token = nextToken();
 		if(token.getTokenType() != TokenType.SEMICOLON)
 			return new Error(token.getPos(), ErrorType.NO_SEMICOLON_ERROR);
@@ -1333,11 +1344,11 @@ public class Analyser {
 			if(sb.getName().equals(name)) {
 				//获得这个标识符的层级
 				int level2 = sb.getLevel();
-				if(level2 == 1) {
+				if(level2 != 0) {
 					level1 = 0;
 					while(symbolTable.size() != 0) {
 						Symbol sb1 = symbolTable.peek();
-						if(sb1.getLevel() == 1) {
+						if(sb1.getLevel() >= 1) {
 							index1 ++;
 							symbolTable.pop();
 							tmp.push(sb1);
@@ -1347,7 +1358,7 @@ public class Analyser {
 						}
 					}
 				}
-				else if(level2 == 0) {
+				else {
 					if(this.level == 0)
 						level1 = 0;
 					else
