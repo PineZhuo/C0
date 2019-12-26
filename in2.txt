@@ -1,12 +1,11 @@
-int main(){
-   int f1,f2;
-   int i = 1;
-   f1=1;f2=1;
-   for(i<=20){
-       print(f1,f2);
-       //if(i%2==0) printf("\n");//控制输出，每行4个
-       f1=f1+f2;//前2个月加起来赋值给第三个月
-       f2=f1+f2;//前2个月加起来赋值给第三个月
-	i = i+1;
-   }
+int main()
+{
+int i = 0;
+	while(i < 3){
+		if(1)
+			print(1+i);
+		else
+			print(2+i);
+		i = i +1;
+	}
 }

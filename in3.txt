@@ -1,9 +1,5 @@
 
 int main()
 {
-print('\x60');
-print('\n');
-print("\"");
-print("\\");
-print("\n");
+print('\x50');
 }

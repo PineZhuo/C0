@@ -350,7 +350,7 @@ public class Analyser {
 		else {
 			int a1 = funcOpTable.get(funcNum-1).size() + 2;
 			funcOpTable.get(funcNum-1).add(new FuncOption("jne", new Pair(a1)));
-			funcOpTable.get(funcNum-1).add(new FuncOption("je", new Pair()));
+			funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair()));
 			unreadToken();
 		}
 		return null;

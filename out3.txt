@@ -1,27 +1,11 @@
 .constants:
 0 S "main"
-1 S """
-2 S "\"
-3 S "
-"
 .start:
 .functions:
 0 0 0 1
 .F0:
-0 bipush 96
+0 bipush 80
 1 cprint 
 2 printl 
-3 bipush 10
-4 cprint 
-5 printl 
-6 loadc 1
-7 sprint 
-8 printl 
-9 loadc 2
-10 sprint 
-11 printl 
-12 loadc 3
-13 sprint 
-14 printl 
-15 ipush 0
-16 iret 
+3 ipush 0
+4 iret 

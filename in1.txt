@@ -1,14 +1,17 @@
-int main(){
-    int i,j,result;
-i = 1;
-    while(i<10){
-	j = 1;
-        while(j<10){
-            result=i*j;
-            printf(i,j,result);//-3d 表示左对齐，占3位
-	j = j+1;
-        }
-        print();//每一行后换行
-	i = i+1;
-    }
+int pow(int x, int n)
+{
+	while(n>0){
+		x = x*x;
+		n = n-1;
+	}
+	return x;
+}
+
+int main()
+{
+	int n, x;
+	scan(n);
+	scan(x);
+	print(pow(x, n));
+	return 0;
 }
