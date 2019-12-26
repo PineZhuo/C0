@@ -1,25 +1,14 @@
-int main()
-{
-	int n,n1,n2,n3;
-	int a = 0;
-	scan(n);
-scan(n1);
-scan(n2);
-	n =n- 2;
-	while (n >= 0)
-	{
-		scan(n3);
-		if (n1<n2)
-		{
-			if(n2 > n3){
-			print(n1, n2, n3);
-			a = 1;}
-		}
-		n1 = n2;
-		n2 = n3;
-		n = n-1;
-	}
-	if (a == 0)
-		print("tan90");
-	return 0;
+int main(){
+    int i,j,result;
+i = 1;
+    while(i<10){
+	j = 1;
+        while(j<10){
+            result=i*j;
+            printf(i,j,result);//-3d 表示左对齐，占3位
+	j = j+1;
+        }
+        print();//每一行后换行
+	i = i+1;
+    }
 }

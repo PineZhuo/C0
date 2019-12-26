@@ -1,11 +1,12 @@
-int g0 = 42;
-int g1 = 1;
-
-int fun(int num) {
-    return -num;
-}
-
-int main() {
-	print(fun(-123456));
-    return 0;
+int main(){
+   int f1,f2;
+   int i = 1;
+   f1=1;f2=1;
+   for(i<=20){
+       print(f1,f2);
+       //if(i%2==0) printf("\n");//控制输出，每行4个
+       f1=f1+f2;//前2个月加起来赋值给第三个月
+       f2=f1+f2;//前2个月加起来赋值给第三个月
+	i = i+1;
+   }
 }
