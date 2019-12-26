@@ -3,15 +3,17 @@ int pow(int x, int n)
 	while(n>0){
 		x = x*x;
 		n = n-1;
+		print(n, ':',x);
 	}
+	print(x);
 	return x;
 }
 
 int main()
 {
 	int n, x;
-	scan(n);
 	scan(x);
+	scan(n);
 	print(pow(x, n));
 	return 0;
 }

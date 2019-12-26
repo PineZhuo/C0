@@ -1,9 +1,0 @@
-int g0 = 42;
-
-int fun(int num) {
-    return -num;
-}
-
-int main() {
-    return fun(-123456);
-}
