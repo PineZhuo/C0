@@ -1,20 +1,11 @@
-int pow(int x, int n)
-{
-	int a = x;
-	while(n>0){
-		x = x*a;
-		n = n-1;
-		print(n, ':',x);
-	}
-	print(x);
-	return x;
-}
-
 int main()
 {
-	int n, x;
-	scan(x);
-	scan(n);
-	print(pow(x, n));
-	return 0;
+int i;
+scan(i);
+if(i < 0)
+if(i < -5)
+i = i -1;
+else
+i = i +1;
+print(i);
 }

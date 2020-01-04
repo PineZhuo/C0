@@ -573,8 +573,9 @@ public class Tokenizer {
 					}
 					if(isHexChar(ch)) {
 						token += ch;
-						int a = Integer.valueOf(token, 16);
-						token = "";
+//						System.out.println(token);
+						int a = Integer.valueOf(token.substring(token.length()-2, token.length()), 16);
+						token = token.substring(0, token.length()-2);
 						token += (char)a;
 						currentState = DFAState.STRING_LITER_STATE;
 					}
