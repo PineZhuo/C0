@@ -20,6 +20,7 @@ return ans;
 int main()
 {
 	int a, b;
+	scan(a);scan(b);
 	print(quickpower(a, b));
 	return 0;
 }
