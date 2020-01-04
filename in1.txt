@@ -1,11 +1,25 @@
+int quMo(int x)
+{
+	while(x>=2)
+		x = x-2;
+	return x;
+}
+int quickpower(int x, int y)
+{
+//求x的y次方
+int ans = 1, cnt = x;
+while(y){
+	if(quMo(y) == 1){
+		ans = ans*cnt;
+	}
+	cnt = cnt*cnt;
+	y = y / 2;
+}
+return ans;
+}
 int main()
 {
-int i;
-scan(i);
-if(i < 0)
-if(i < -5)
-i = i -1;
-else
-i = i +1;
-print(i);
+	int a, b;
+	print(quickpower(a, b));
+	return 0;
 }
