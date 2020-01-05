@@ -71,10 +71,10 @@ public class Analyser {
 		
 		if(fileType == 1) {
 			//控制台输出改到文件中
-//			file = new File(out);
-//			fileOutputStream = new FileOutputStream(file);
-//			printStream = new PrintStream(fileOutputStream);
-//			System.setOut(printStream);
+			file = new File(out);
+			fileOutputStream = new FileOutputStream(file);
+			printStream = new PrintStream(fileOutputStream);
+			System.setOut(printStream);
 			System.out.println(".constants:");
 			for(int i = 0; i < constTable.size(); i++) {
 				constTable.get(i).print();

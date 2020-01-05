@@ -1,10 +1,251 @@
 .constants:
-0 D 0x3ff0000000000000
+0 S "fabs"
 1 S "main"
+2 D 0x0
+3 D 0x3e7ad7f29abcaf48
+4 D 0x0
+5 D 0x0
+6 S "sqrt:"
+7 S "start, in:"
+8 S ", left:"
+9 S ", right:"
+10 S "mid ="
+11 S ", left ="
+12 S ", right ="
+13 S ", prod ="
+14 S "term:"
+15 S "eps:"
+16 S "sqrt of"
+17 S "is"
+18 S "sqrt of"
+19 S "is"
 .start:
-0 loadc 0
 .functions:
-0 1 0 1
+0 0 1 1
+1 1 0 1
 .F0:
+0 loada 0,0
+1 dload 
+2 nop 
+3 ipush 0
+4 i2d 
+5 dcmp 
+6 jl 8
+7 jmp 13
+8 loada 0,0
+9 loada 0,0
+10 dload 
+11 dneg 
+12 dstore 
+13 loada 0,0
+14 dload 
+15 dret 
+16 snew 2
+17 dret 
+.F1:
 0 ipush 0
-1 iret 
+1 ipush 0
+2 i2d 
+3 loadc 2
+4 loadc 3
+5 loadc 4
+6 loadc 5
+7 loadc 6
+8 sprint 
+9 printl 
+10 loada 0,0
+11 iscan 
+12 istore 
+13 loada 0,3
+14 loada 0,0
+15 iload 
+16 i2d 
+17 dstore 
+18 loadc 7
+19 sprint 
+20 bipush 32
+21 cprint 
+22 loada 0,0
+23 iload 
+24 iprint 
+25 bipush 32
+26 cprint 
+27 loadc 8
+28 sprint 
+29 bipush 32
+30 cprint 
+31 loada 0,1
+32 dload 
+33 iprint 
+34 bipush 32
+35 cprint 
+36 loadc 9
+37 sprint 
+38 bipush 32
+39 cprint 
+40 loada 0,3
+41 dload 
+42 iprint 
+43 printl 
+44 loada 0,1
+45 dload 
+46 nop 
+47 loada 0,3
+48 dload 
+49 dsub 
+50 call 0
+51 nop 
+52 loada 0,5
+53 dload 
+54 dcmp 
+55 jge 57
+56 jmp 187
+57 loada 0,7
+58 loada 0,3
+59 dload 
+60 nop 
+61 loada 0,1
+62 dload 
+63 dadd 
+64 dmul 
+65 ipush 2
+66 i2d 
+67 ddiv 
+68 dstore 
+69 loada 0,9
+70 loada 0,7
+71 dload 
+72 dmul 
+73 loada 0,7
+74 dload 
+75 dmul 
+76 dstore 
+77 loadc 10
+78 sprint 
+79 bipush 32
+80 cprint 
+81 loada 0,7
+82 dload 
+83 iprint 
+84 bipush 32
+85 cprint 
+86 loadc 11
+87 sprint 
+88 bipush 32
+89 cprint 
+90 loada 0,1
+91 dload 
+92 iprint 
+93 bipush 32
+94 cprint 
+95 loadc 12
+96 sprint 
+97 bipush 32
+98 cprint 
+99 loada 0,3
+100 dload 
+101 iprint 
+102 bipush 32
+103 cprint 
+104 loadc 13
+105 sprint 
+106 bipush 32
+107 cprint 
+108 loada 0,9
+109 dload 
+110 iprint 
+111 printl 
+112 loadc 14
+113 sprint 
+114 bipush 32
+115 cprint 
+116 loada 0,9
+117 dload 
+118 nop 
+119 loada 0,0
+120 iload 
+121 i2d 
+122 dsub 
+123 call 0
+124 iprint 
+125 bipush 32
+126 cprint 
+127 loadc 15
+128 sprint 
+129 bipush 32
+130 cprint 
+131 loada 0,5
+132 dload 
+133 iprint 
+134 printl 
+135 loada 0,9
+136 dload 
+137 nop 
+138 loada 0,0
+139 iload 
+140 i2d 
+141 dsub 
+142 call 0
+143 nop 
+144 loada 0,5
+145 dload 
+146 dcmp 
+147 jl 149
+148 jmp 168
+149 loadc 16
+150 sprint 
+151 bipush 32
+152 cprint 
+153 loada 0,0
+154 iload 
+155 iprint 
+156 bipush 32
+157 cprint 
+158 loadc 17
+159 sprint 
+160 bipush 32
+161 cprint 
+162 loada 0,7
+163 dload 
+164 iprint 
+165 printl 
+166 ipush 0
+167 iret 
+168 loada 0,9
+169 dload 
+170 nop 
+171 loada 0,0
+172 iload 
+173 i2d 
+174 dcmp 
+175 jg 177
+176 jmp 182
+177 loada 0,3
+178 loada 0,7
+179 dload 
+180 dstore 
+181 jmp 186
+182 loada 0,1
+183 loada 0,7
+184 dload 
+185 dstore 
+186 jmp 44
+187 loadc 18
+188 sprint 
+189 bipush 32
+190 cprint 
+191 loada 0,0
+192 iload 
+193 iprint 
+194 bipush 32
+195 cprint 
+196 loadc 19
+197 sprint 
+198 bipush 32
+199 cprint 
+200 loada 0,1
+201 dload 
+202 iprint 
+203 printl 
+204 ipush 0
+205 iret 
