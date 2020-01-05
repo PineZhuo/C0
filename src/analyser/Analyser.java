@@ -1500,11 +1500,24 @@ public class Analyser {
 		if(token.getTokenType() != TokenType.IDENTIFIER)
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 		//scan的标识符必须是非const值，而且这个值必须存在，且不是函数
-		if(isAbleToAssign(token.getValue())) {
+		TokenType tt = isAbleToAssign(token.getValue());
+		if(tt != null) {
 			Pair p1 = getLevelandIndex(token.getValue());
-			funcOpTable.get(funcNum-1).add(new FuncOption("loada", p1));
-			funcOpTable.get(funcNum-1).add(new FuncOption("iscan", new Pair()));
-			funcOpTable.get(funcNum-1).add(new FuncOption("istore", new Pair()));
+			if(tt == TokenType.INTEGER) {
+				funcOpTable.get(funcNum-1).add(new FuncOption("loada", p1));
+				funcOpTable.get(funcNum-1).add(new FuncOption("iscan", new Pair()));
+				funcOpTable.get(funcNum-1).add(new FuncOption("istore", new Pair()));
+			}
+			else if(tt == TokenType.CHARACTER) {
+				funcOpTable.get(funcNum-1).add(new FuncOption("loada", p1));
+				funcOpTable.get(funcNum-1).add(new FuncOption("cscan", new Pair()));
+				funcOpTable.get(funcNum-1).add(new FuncOption("istore", new Pair()));
+			}
+			else if(tt == TokenType.DOUBLE_DIGIT) {
+				funcOpTable.get(funcNum-1).add(new FuncOption("loada", p1));
+				funcOpTable.get(funcNum-1).add(new FuncOption("dscan", new Pair()));
+				funcOpTable.get(funcNum-1).add(new FuncOption("dstore", new Pair()));
+			}
 		}else {
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 		}
@@ -1564,7 +1577,7 @@ public class Analyser {
 		return new Error();
 	}
 	
-	//<输出> -> <表达式> | <字符> | <字符串>
+	//<输出> -> <表达式> | <字符> | <字符串> 
 	private Error print()  {
 		Token token = nextToken();//预读
 		if(token.getTokenType() == TokenType.CHARACTER) {
@@ -1589,7 +1602,10 @@ public class Analyser {
 			unreadToken();
 			Error err = expression();
 			if(err.isError()) return err;
-			funcOpTable.get(funcNum-1).add(new FuncOption("iprint", new Pair()));
+			if(err.getTokenType() == TokenType.INT || err.getTokenType() == TokenType.CHAR)
+				funcOpTable.get(funcNum-1).add(new FuncOption("iprint", new Pair()));
+			else
+				funcOpTable.get(funcNum-1).add(new FuncOption("dprint", new Pair()));
 		}
 		
 		return new Error();
@@ -1700,24 +1716,29 @@ public class Analyser {
 	}
 	
 	//判断这个单词是否存在 若存在 是否是变量或者可变参数 给scan用
-	private boolean isAbleToAssign(String name) {
+	//直接返回tokentype
+	private TokenType isAbleToAssign(String name) {
 		Stack<Symbol> tmp = new Stack<Symbol>();
 		boolean flag = false;
+		TokenType tt = null;
 		while(symbolTable.size() != 0) {
 			Symbol sb = symbolTable.pop();
 			tmp.push(sb);
 			if(sb.getName().equals(name) 
-					&& (sb.getKind() == IdentiKind.PARAMETER || sb.getKind() == IdentiKind.VARIABLE)
-					&& (sb.getType() == IdentiType.INT || sb.getType() == IdentiType.CHAR
-					|| sb.getType() == IdentiType.DOUBLE)) {
-				flag = true;//可合法赋值
+					&& (sb.getKind() == IdentiKind.PARAMETER || sb.getKind() == IdentiKind.VARIABLE)) {
+				if(sb.getType() == IdentiType.CHAR)//可合法赋值
+					tt = TokenType.CHARACTER;
+				else if(sb.getType() == IdentiType.INT)
+					tt = TokenType.INTEGER;
+				else if(sb.getType() == IdentiType.DOUBLE)
+					tt = TokenType.DOUBLE_DIGIT;
 				break;
 			}
 		}
 		while(tmp.size() != 0) {
 			symbolTable.push(tmp.pop());//倒回来
 		}
-		return flag;
+		return tt;
 	}
 	
 	//判断函数是否已经声明

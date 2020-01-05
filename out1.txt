@@ -76,7 +76,7 @@
 30 cprint 
 31 loada 0,1
 32 dload 
-33 iprint 
+33 dprint 
 34 bipush 32
 35 cprint 
 36 loadc 9
@@ -85,7 +85,7 @@
 39 cprint 
 40 loada 0,3
 41 dload 
-42 iprint 
+42 dprint 
 43 printl 
 44 loada 0,1
 45 dload 
@@ -126,7 +126,7 @@
 80 cprint 
 81 loada 0,7
 82 dload 
-83 iprint 
+83 dprint 
 84 bipush 32
 85 cprint 
 86 loadc 11
@@ -135,7 +135,7 @@
 89 cprint 
 90 loada 0,1
 91 dload 
-92 iprint 
+92 dprint 
 93 bipush 32
 94 cprint 
 95 loadc 12
@@ -144,7 +144,7 @@
 98 cprint 
 99 loada 0,3
 100 dload 
-101 iprint 
+101 dprint 
 102 bipush 32
 103 cprint 
 104 loadc 13
@@ -153,7 +153,7 @@
 107 cprint 
 108 loada 0,9
 109 dload 
-110 iprint 
+110 dprint 
 111 printl 
 112 loadc 14
 113 sprint 
@@ -167,7 +167,7 @@
 121 i2d 
 122 dsub 
 123 call 0
-124 iprint 
+124 dprint 
 125 bipush 32
 126 cprint 
 127 loadc 15
@@ -176,7 +176,7 @@
 130 cprint 
 131 loada 0,5
 132 dload 
-133 iprint 
+133 dprint 
 134 printl 
 135 loada 0,9
 136 dload 
@@ -207,7 +207,7 @@
 161 cprint 
 162 loada 0,7
 163 dload 
-164 iprint 
+164 dprint 
 165 printl 
 166 ipush 0
 167 iret 
@@ -245,7 +245,7 @@
 199 cprint 
 200 loada 0,1
 201 dload 
-202 iprint 
+202 dprint 
 203 printl 
 204 ipush 0
 205 iret 
