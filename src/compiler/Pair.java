@@ -1,6 +1,7 @@
 package compiler;
 
 import analyser.IdentiType;
+import tokenizer.TokenType;
 
 public class Pair {
 	private int first;
@@ -36,6 +37,16 @@ public class Pair {
 	
 	public IdentiType getType() {
 		return type;
+	}
+	
+	public TokenType getTokenType() {
+		if(type == IdentiType.CHAR || type == IdentiType.CONST_CHAR)
+			return TokenType.CHAR;
+		else if(type == IdentiType.INT || type == IdentiType.CONST_INT)
+			return TokenType.INT;
+		else if(type == IdentiType.DOUBLE || type == IdentiType.CONST_DOUBLE)
+			return TokenType.DOUBLE;
+		return null;
 	}
 	
 	public int getFirst() {

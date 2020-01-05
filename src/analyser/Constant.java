@@ -9,6 +9,7 @@ public class Constant {
 	private String type;
 	private String stringValue;
 	private int intValue;
+	private double doubleValue;
 	
 	public Constant(int index, String type, String stringValue) {
 		this.index = index;
@@ -22,8 +23,21 @@ public class Constant {
 		this.intValue = intValue;
 	}
 	
+	public Constant(int index, String type, double doubleValue) {
+		this.index = index;
+		this.type = type;
+		this.doubleValue = doubleValue;
+	}
+	
 	public void print() {
-		System.out.println(index + " " + type + " " + "\"" + stringValue + "\"");
+		if(type.equals("S"))
+			System.out.println(index + " " + type + " " + "\"" + stringValue + "\"");
+		else if(type.equals("D")) {
+			long doubleAsLong = Double.doubleToRawLongBits(doubleValue);
+			String longToHex = Long.toHexString(doubleAsLong);
+			System.out.println(index + " " + type + " " + "0x" +longToHex);
+		}
+			
 	}
 	
 	public void printBinary(DataOutputStream out) throws NumberFormatException, IOException {

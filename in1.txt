@@ -1,26 +1,38 @@
-int quMo(int x)
-{
-	while(x>=2)
-		x = x-2;
-	return x;
+double fabs(double a) {
+    if (a < 0) a = -a;
+    return a;
 }
-int quickpower(int x, int y)
-{
-//求x的y次方
-int ans = 1, cnt = x;
-while(y){
-	if(quMo(y) == 1){
-		ans = ans*cnt;
-	}
-	cnt = cnt*cnt;
-	y = y / 2;
-}
-return ans;
-}
-int main()
-{
-	int a, b;
-	scan(a);scan(b);
-	print(quickpower(a, b));
-	return 0;
+
+int main() {
+    int in;
+    double left = 0, right;
+    double eps = 1e-7;
+double mid;
+double prod;
+    print("sqrt:");
+    scan(in);
+
+    right = in;
+
+    print("start, in:", in, ", left:", left, ", right:", right);
+
+
+    while (fabs(left - right) >= eps) {
+        mid = (right + left) / 2;
+        prod = mid * mid;
+        print("mid =", mid, ", left =", left, ", right =", right, ", prod =", prod);
+
+        print("term:", fabs(prod - in), "eps:", eps);
+        if (fabs(prod - in) < eps) {
+            print("sqrt of", in, "is", mid);
+            return 0;
+        }
+
+        if (prod > in) {
+            right = mid;
+        } else {
+            left = mid;
+        }
+    }
+    print("sqrt of", in, "is", left);
 }

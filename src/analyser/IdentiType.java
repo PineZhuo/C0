@@ -5,4 +5,8 @@ public enum IdentiType {
 	INT,
 	CONST_INT,
 	CONST_VOID,
+	DOUBLE,
+	CONST_DOUBLE,
+	CHAR,
+	CONST_CHAR,
 }

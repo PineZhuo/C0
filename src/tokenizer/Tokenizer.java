@@ -22,6 +22,7 @@ public class Tokenizer {
 //	private Token[] tokenList = new Token()[];
 	private ArrayList<Token> tokenList = new ArrayList<>();
 	private int index = 0;
+	private boolean isFrontZero = false;
 	
 	public void runTokenizer() throws IOException {
 		FileInputStream path = new FileInputStream("d://in.txt");
@@ -71,6 +72,7 @@ public class Tokenizer {
 //		int tokenLine = currentLine;
 		Pair pos = new Pair(1, 1);
 		pos.setPair(currentLine, currentCol);
+		isFrontZero = false;
 		String token = new String();
 		while(true) {
 			Character ch = nextChar(input);
@@ -150,6 +152,10 @@ public class Tokenizer {
 								currentState = DFAState.CHAR_LITER1_STATE;
 								break;
 							}
+							case '.':{//double可以是0直接开头
+								currentState = DFAState.DOUBLE_STATE1;
+								break;
+							}
 							default:{
 								//既是合法输入 又不是特别的符号 那就是字符串或者字符的组成
 								//这里要返回错误
@@ -176,8 +182,15 @@ public class Tokenizer {
 						currentState = DFAState.HEX_STATE;
 						token += ch;
 					}
-					else if(Character.isDigit(ch)) {//有前导0的十进制，报错
-						return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+					else if(Character.isDigit(ch)) {//有前导0的十进制，报错x，现在要写double，这里不能报错了
+//						return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+						isFrontZero = true;
+						token += ch;
+						currentState = DFAState.DEC_STATE;
+					}
+					else if(ch == '.') {
+						token += ch;
+						currentState = DFAState.DOUBLE_STATE6;
 					}
 					else {//数字0
 						unread(input, ch);
@@ -194,9 +207,20 @@ public class Tokenizer {
 						catch(NumberFormatException e) {
 							return new Token(pos, TokenType.ERROR, ErrorType.TOO_LARGE_INTEGER);
 						}
-						return new Token(pos, TokenType.DEC_INTEGER, Integer.toString(a));
+						if(isFrontZero == false)
+							return new Token(pos, TokenType.DEC_INTEGER, Integer.toString(a));
+						else
+							return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
 					}
 					if(Character.isDigit(ch)) {
+						token += ch;
+					}
+					else if(ch == 'e' || ch == 'E') {//这两个字母不报错，意味着double
+						token += ch;
+						currentState = DFAState.DOUBLE_STATE3;
+					}
+					else if(ch == '.') {//double
+						currentState = DFAState.DOUBLE_STATE6;
 						token += ch;
 					}
 					else if(Character.isLetter(ch)) {//字母，报错
@@ -212,7 +236,127 @@ public class Tokenizer {
 							//e.printStackTrace();
 							return new Token(pos, TokenType.ERROR, ErrorType.TOO_LARGE_INTEGER);
 						}
-						return new Token(pos, TokenType.DEC_INTEGER, Integer.toString(a));//返回这个token
+//						return new Token(pos, TokenType.DEC_INTEGER, Integer.toString(a));//返回这个token
+						if(isFrontZero == false)
+							return new Token(pos, TokenType.DEC_INTEGER, Integer.toString(a));
+						else
+							return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+					}
+					break;
+				}
+				case DOUBLE_STATE1:{
+					if(ch == null) {
+//						double d = 0;
+//						try { 
+//							d = Double.parseDouble(token);
+//						}catch(NumberFormatException e) {
+//							return new Token(pos, TokenType.ERROR, ErrorType.TOO_LARGE_DOUBLE);
+//						}
+//						return new Token(pos, TokenType.DOUBLE, token);
+						return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+					}
+					
+					if(Character.isDigit(ch)) {
+						token += ch;
+						currentState = DFAState.DOUBLE_STATE2;
+					}
+					else {
+						return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+					}
+					break;
+				}
+				case DOUBLE_STATE2:{
+					if(ch == null) {
+						Double d = Double.valueOf(token);
+						if(d.isInfinite() || d.isNaN())
+							return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+						return new Token(pos, TokenType.DOUBLE_DIGIT, token);	
+					}
+					
+					if(Character.isDigit(ch)) {
+						token += ch;
+					}
+					else if(ch == 'e' || ch == 'E') {
+						token += ch;
+						currentState = DFAState.DOUBLE_STATE3;
+					}
+					else {
+						unread(input, ch);
+						Double d = Double.valueOf(token);
+						if(d.isInfinite() || d.isNaN())
+							return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+						return new Token(pos, TokenType.DOUBLE_DIGIT, token);	
+					}
+					break;
+				}
+				case DOUBLE_STATE3:{
+					if(ch == null) {
+						return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+					}
+					if(ch == '+' || ch == '-') {
+						token += ch;
+						currentState = DFAState.DOUBLE_STATE4;
+					}
+					else {//除了加和减以外，都交给下一个阶段判断
+						unread(input, ch);
+						currentState = DFAState.DOUBLE_STATE4;
+					}
+					break;
+				}
+				case DOUBLE_STATE4:{
+					if(ch == null) {
+						return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+					}
+					if(Character.isDigit(ch)) {
+						token += ch;
+						currentState = DFAState.DOUBLE_STATE5;
+					}
+					else {
+						return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+					}
+					break;
+				}
+				case DOUBLE_STATE5:{
+					if(ch == null) {
+						Double d = Double.valueOf(token);
+						if(d.isInfinite() || d.isNaN())
+							return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+						return new Token(pos, TokenType.DOUBLE_DIGIT, token);
+					}
+					if(Character.isDigit(ch)) {
+						token += ch;
+						currentState = DFAState.DOUBLE_STATE5;
+					}
+					else {
+						unread(input, ch);
+						Double d = Double.valueOf(token);
+						if(d.isInfinite() || d.isNaN())
+							return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+						return new Token(pos, TokenType.DOUBLE_DIGIT, Double.toString(d));
+					}
+					break;
+				}
+				case DOUBLE_STATE6:{
+					if(ch == null) {
+						Double d = Double.valueOf(token);
+						if(d.isInfinite() || d.isNaN())
+							return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+						return new Token(pos, TokenType.DOUBLE_DIGIT, token);
+					}
+					if(ch == 'e' || ch == 'E') {
+						token += ch;
+						currentState = DFAState.DOUBLE_STATE3;
+					}
+					else if(Character.isDigit(ch)) {
+						token += ch;
+						currentState = DFAState.DOUBLE_STATE2;
+					}
+					else{
+						unread(input, ch);
+						Double d = Double.valueOf(token);
+						if(d.isInfinite() || d.isNaN())
+							return new Token(pos, TokenType.ERROR, ErrorType.INVALID_INPUT_ERROR);
+						return new Token(pos, TokenType.DOUBLE_DIGIT, Double.toString(d));
 					}
 					break;
 				}

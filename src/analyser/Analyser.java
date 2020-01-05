@@ -43,6 +43,8 @@ public class Analyser {
 	private ArrayList<Start> startTable = new ArrayList<>();
 	private ArrayList<Functions> funcTable = new ArrayList<>();
 	private ArrayList<ArrayList<FuncOption> > funcOpTable = new ArrayList<>();
+	private TokenType retType;//记录当前函数声明返回值
+	ArrayList<TokenType> typeList = new ArrayList<>();//记录强制转换的类型列表
 //	private Vector<FuncOption> nowFuncTable = new Vector<>();
 //	private int funcIndex = 0;
 	
@@ -57,7 +59,7 @@ public class Analyser {
 			return ;
 		
 		Error err = Program();
-		if(err != null) {
+		if(err.isError()) {
 			err.printError();
 			return ;
 		}
@@ -69,10 +71,10 @@ public class Analyser {
 		
 		if(fileType == 1) {
 			//控制台输出改到文件中
-			file = new File(out);
-			fileOutputStream = new FileOutputStream(file);
-			printStream = new PrintStream(fileOutputStream);
-			System.setOut(printStream);
+//			file = new File(out);
+//			fileOutputStream = new FileOutputStream(file);
+//			printStream = new PrintStream(fileOutputStream);
+//			System.setOut(printStream);
 			System.out.println(".constants:");
 			for(int i = 0; i < constTable.size(); i++) {
 				constTable.get(i).print();
@@ -184,13 +186,13 @@ public class Analyser {
 	private Error Program() {
 		while(isVariableHead()) {
 			Error err = varDec();
-			if(err != null) return err;
+			if(err.isError()) return err;
 		}
 		while(isFuncHead()) {
 			Error err = funcDef();
-			if(err != null) return err;
+			if(err.isError()) return err;
 		}
-		return null;
+		return new Error();
 	}
 	// <变量声明> -> [const] <类型><初始化说明列表>';'
 	// int a , b = 1;
@@ -203,18 +205,20 @@ public class Analyser {
 			isConst = true;
 		}
 		
-		if(token.getTokenType() != TokenType.INT && token.getTokenType() != TokenType.CHAR) {
+		if(token.getTokenType() != TokenType.INT 
+				&& token.getTokenType() != TokenType.CHAR
+				&& token.getTokenType() != TokenType.DOUBLE) {
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 		}
 		TokenType tt = token.getTokenType();
 		
 		Error err = initDecList(isConst, tt);
-		if(err != null) return err;
+		if(err.isError()) return err;
 		
 		token = nextToken();
 		if(token.getTokenType() != TokenType.SEMICOLON)
 			return new Error(token.getPos(), ErrorType.NO_SEMICOLON_ERROR);
-		return null;
+		return new Error();
 	}
 	
 	
@@ -222,15 +226,15 @@ public class Analyser {
 	// a, b, c = 1
 	private Error initDecList(boolean isConst, TokenType tt)  {
 		Error err = initDec(isConst, tt);
-		if(err != null) return err;
+		if(err.isError()) return err;
 		Token token = nextToken();
 		while(token.getTokenType() == TokenType.COMMA) {
 			err = initDec(isConst, tt);
-			if(err != null) return err;
+			if(err.isError()) return err;
 			token = nextToken();
 		}
 		unreadToken();
-		return null;
+		return new Error();
 	}
 	
 	//<初始化说明> -> <标识符> [<初始化>]
@@ -247,10 +251,20 @@ public class Analyser {
 //			String name = token.getValue();
 			
 			if(isConst) {
-				symbolTable.push(new Symbol(token, IdentiType.CONST_INT, IdentiKind.VARIABLE, level));
+				if(tt == TokenType.INT)
+					symbolTable.push(new Symbol(token, IdentiType.CONST_INT, IdentiKind.VARIABLE, level));
+				else if(tt == TokenType.CHAR)
+					symbolTable.push(new Symbol(token, IdentiType.CONST_CHAR, IdentiKind.VARIABLE, level));
+				else if(tt == TokenType.DOUBLE)
+					symbolTable.push(new Symbol(token, IdentiType.CONST_DOUBLE, IdentiKind.VARIABLE, level));
 			}
 			else {
-				symbolTable.push(new Symbol(token, IdentiType.INT, IdentiKind.VARIABLE, level));
+				if(tt == TokenType.INT)
+					symbolTable.push(new Symbol(token, IdentiType.INT, IdentiKind.VARIABLE, level));
+				else if(tt == TokenType.CHAR)
+					symbolTable.push(new Symbol(token, IdentiType.CHAR, IdentiKind.VARIABLE, level));
+				else if(tt == TokenType.DOUBLE)
+					symbolTable.push(new Symbol(token, IdentiType.DOUBLE, IdentiKind.VARIABLE, level));
 			}
 			
 			token = nextToken();
@@ -264,15 +278,31 @@ public class Analyser {
 			if(token.getTokenType() == TokenType.EQUAL_SIGN) {
 				unreadToken();
 				Error err = init(tt);
-				if(err != null) return err;
+				if(err.isError()) return err;
 			}
 			else {
 				//赋初值0
 				if(level == 0) {
-					startTable.add(new Start("ipush", new Pair(0)));
+					if(tt == TokenType.INT)
+						startTable.add(new Start("ipush", new Pair(0)));
+					else if(tt == TokenType.CHAR)
+						startTable.add(new Start("bipush", new Pair(0)));
+					else if(tt == TokenType.DOUBLE) {
+						constTable.add(new Constant(constIndex, "D", 0.0));
+						startTable.add(new Start("loadc", new Pair(constIndex)));
+						constIndex++;
+					}
 				}
 				else {
-					funcOpTable.get(funcNum-1).add(new FuncOption("ipush", new Pair(0)));
+					if(tt == TokenType.INT)
+						funcOpTable.get(funcNum-1).add(new FuncOption("ipush", new Pair(0)));
+					else if(tt == TokenType.CHAR)
+						funcOpTable.get(funcNum-1).add(new FuncOption("bipush", new Pair(0)));
+					else if(tt == TokenType.DOUBLE) {
+						constTable.add(new Constant(constIndex, "D", 0.0));
+						funcOpTable.get(funcNum-1).add(new FuncOption("loadc", new Pair(constIndex)));
+						constIndex++;
+					}
 				}
 				
 				unreadToken();
@@ -281,7 +311,7 @@ public class Analyser {
 		else {
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 		}
-		return null;
+		return new Error();
 	}
 	
 	//<初始化> -> ‘=’ <表达式>
@@ -290,15 +320,56 @@ public class Analyser {
 		Token token = nextToken();
 		if(token.getTokenType() == TokenType.EQUAL_SIGN) {
 			Error err = expression();
-			if(err != null) return err;
+			if(err.isError()) return err;
+			TokenType right = err.getTokenType();
+			if(tt == TokenType.CHAR) {
+				if(right == TokenType.INT) {
+					if(level == 0) {
+						startTable.add(new Start("i2c", new Pair()));
+					}
+					else {
+						funcOpTable.get(funcNum-1).add(new FuncOption("i2c", new Pair()));
+					}
+				}
+				else if(right == TokenType.DOUBLE) {
+					if(level == 0) {
+						startTable.add(new Start("d2i", new Pair()));
+						startTable.add(new Start("i2c", new Pair()));
+					}
+					else {
+						funcOpTable.get(funcNum-1).add(new FuncOption("d2i", new Pair()));
+						funcOpTable.get(funcNum-1).add(new FuncOption("i2c", new Pair()));
+					}
+				}
+			}
+			else if(tt == TokenType.INT) {
+				if(right == TokenType.DOUBLE) {
+					if(level == 0) {
+						startTable.add(new Start("d2i", new Pair()));
+					}
+					else {
+						funcOpTable.get(funcNum-1).add(new FuncOption("d2i", new Pair()));
+					}
+				}
+			}
+			else if(tt == TokenType.DOUBLE) {
+				if(right == TokenType.INT || right == TokenType.CHAR) {
+					if(level == 0) {
+						startTable.add(new Start("i2d", new Pair()));
+					}
+					else {
+						funcOpTable.get(funcNum-1).add(new FuncOption("i2d", new Pair()));
+					}
+				}
+			}
 		}
 		else
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
-		return null;
+		return new Error();
 	}
 	
 	// <赋值表达式> -> <标识符>[ '=' <表达式>]
-	private Error assignExpre()  {
+	private Error assignExpre() {
 		Token token = nextToken();
 		if(token.getTokenType() != TokenType.IDENTIFIER)
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
@@ -310,7 +381,8 @@ public class Analyser {
 		token = nextToken();
 		if(token.getTokenType() == TokenType.EQUAL_SIGN) {
 			//有等号 考虑是不是常量
-			if(!isAbleToAssign2(name)) {
+			TokenType tt = isAbleToAssign2(name);
+			if(tt == null) {
 				return new Error(getLastToken().getPos(), ErrorType.INVALID_ASSIGNMENT);
 			}
 			//根据name找到在栈中的偏移
@@ -321,30 +393,64 @@ public class Analyser {
 				funcOpTable.get(funcNum-1).add(new FuncOption("loada", p1));
 			}
 			Error err = expression();
-			if(err != null) return err;
+			if(err.isError()) return err;
+			transType(err.getTokenType(), tt);
 			if(level == 0) {
-				startTable.add(new Start("istore", new Pair()));
+				if(tt == TokenType.CHAR || tt == TokenType.INT)
+					startTable.add(new Start("istore", new Pair()));
+				else if(tt == TokenType.DOUBLE)
+					startTable.add(new Start("dstore", new Pair()));
 			}
 			else {
-				funcOpTable.get(funcNum-1).add(new FuncOption("istore", new Pair()));
+				if(tt == TokenType.CHAR || tt == TokenType.INT)
+					funcOpTable.get(funcNum-1).add(new FuncOption("istore", new Pair()));
+				else if(tt == TokenType.DOUBLE)
+					funcOpTable.get(funcNum-1).add(new FuncOption("dstore", new Pair()));
 			}
 		}
 		else
-			unreadToken();
+			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 		
-		return null;
+		return new Error();
 	}
 	
 	// <状态> -> <表达式>[<比较符号> <表达式>]
 	private Error condition()  {
 		Error err = expression();
-		if(err != null) return err;
+		if(err.isError()) return err;
+		TokenType left = err.getTokenType();
+		funcOpTable.get(funcNum-1).add(new FuncOption("nop", new Pair()));
+		int offset = funcOpTable.get(funcNum-1).size()-1;
 		Token token = nextToken();
 		if(isCompareSign(token)) {
 			String compare = token.getValue();
 			err = expression();
-			if(err != null) return err;
-			funcOpTable.get(funcNum-1).add(new FuncOption("isub", new Pair()));
+			if(err.isError()) return err;
+			TokenType right = err.getTokenType();
+			if(left == right) {
+				if(left == TokenType.CHAR || left == TokenType.INT) {
+					funcOpTable.get(funcNum-1).add(new FuncOption("icmp", new Pair()));
+				}
+				else {
+					funcOpTable.get(funcNum-1).add(new FuncOption("dcmp", new Pair()));
+				}
+			}
+			else {
+				if(left == TokenType.DOUBLE) {
+					funcOpTable.get(funcNum-1).add(new FuncOption("i2d", new Pair()));
+					funcOpTable.get(funcNum-1).add(new FuncOption("dcmp", new Pair()));
+				}
+				else if(left == TokenType.INT || left == TokenType.CHAR) {
+					if(right == TokenType.CHAR || right == TokenType.INT) {
+						funcOpTable.get(funcNum-1).add(new FuncOption("icmp", new Pair()));
+					}
+					else {
+						funcOpTable.get(funcNum-1).set(offset, new FuncOption("i2d", new Pair()));
+						funcOpTable.get(funcNum-1).add(new FuncOption("dcmp", new Pair()));
+					}
+				}
+			}
+//			funcOpTable.get(funcNum-1).add(new FuncOption("isub", new Pair()));
 			addCompareInstruct(compare);
 		}
 		else {
@@ -353,76 +459,350 @@ public class Analyser {
 			funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair()));
 			unreadToken();
 		}
-		return null;
+		return new Error();
 	}
 	
 	// <表达式> -> <表达式语句>
 	private Error expression()  {
 		Error err = addExpre();
-		if(err != null) return err;
-		return null;
+		if(err.isError()) return err;
+//		System.out.println(err.getTokenType());
+		return new Error(err.getTokenType());
 	}
 	
 	// <表达式语句> -> <项> { <加减符号> <项>}
 	private Error addExpre()  {
 		Error err = mulExpre();
-		if(err != null) return err;
+		if(err.isError()) return err;
+		TokenType tt1 = err.getTokenType();
 		Token token = nextToken();
 		while(token.getTokenType() == TokenType.PLUS_SIGN 
 				|| token.getTokenType() == TokenType.MINUS_SIGN) {
+			int offset;
+			if(level == 0) {
+				startTable.add(new Start("nop", new Pair()));//无需转换类型
+				offset = startTable.size()-1;
+			}
+			else {
+				funcOpTable.get(funcNum-1).add(new FuncOption("nop", new Pair()));
+				offset = funcOpTable.get(funcNum-1).size()-1;
+			}
 			err = mulExpre();
-			if(err != null) return err;
+			if(err.isError()) return err;
+			TokenType tt2 = err.getTokenType();
+			 
 			if(token.getTokenType() == TokenType.PLUS_SIGN) {
 				if(level == 0) {
-					startTable.add(new Start("iadd", new Pair()));
+					if(tt1 == TokenType.INT || tt1 == TokenType.CHAR) {
+						if(tt2 == TokenType.CHAR || tt2 == TokenType.INT) {
+							startTable.add(new Start("iadd", new Pair()));//无需转换类型
+							tt1 = TokenType.INT;
+						}
+						else if(tt2 == TokenType.DOUBLE) {
+							startTable.set(offset, new Start("i2d", new Pair()));
+							startTable.add(new Start("dadd", new Pair()));
+							tt1 = TokenType.DOUBLE;
+						}
+					}
+					else if(tt1 == TokenType.DOUBLE) {	
+						if(tt2 == TokenType.DOUBLE) {
+							startTable.add(new Start("dadd", new Pair()));
+						}
+						else {
+							startTable.add(new Start("i2d", new Pair()));
+							startTable.add(new Start("dadd", new Pair()));
+						}
+					}
 				}
 				else {
-					funcOpTable.get(funcNum-1).add(new FuncOption("iadd", new Pair()));
+					if(tt1 == TokenType.INT) {
+						if(tt2 == TokenType.CHAR || tt2 == TokenType.INT) {
+							funcOpTable.get(funcNum-1).add(new FuncOption("iadd", new Pair()));//无需转换类型
+							tt1 = TokenType.INT;
+						}
+						else if(tt2 == TokenType.DOUBLE) {
+							funcOpTable.get(funcNum-1).set(offset, new FuncOption("i2d", new Pair()));
+							funcOpTable.get(funcNum-1).add(new FuncOption("dadd", new Pair()));
+							tt1 = TokenType.DOUBLE;
+						}
+					}
+					else if(tt1 == TokenType.DOUBLE) {	
+						if(tt2 == TokenType.DOUBLE) {
+							funcOpTable.get(funcNum-1).add(new FuncOption("dadd", new Pair()));
+						}
+						else {
+							funcOpTable.get(funcNum-1).add(new FuncOption("i2d", new Pair()));
+							funcOpTable.get(funcNum-1).add(new FuncOption("dadd", new Pair()));
+						}
+					}
+					
 				}
 			}
 			else {
 				if(level == 0) {
-					startTable.add(new Start("isub", new Pair()));
+					if(tt1 == TokenType.INT || tt1 == TokenType.CHAR) {
+						if(tt2 == TokenType.CHAR || tt2 == TokenType.INT) {
+							startTable.add(new Start("isub", new Pair()));//无需转换类型
+							tt1 = TokenType.INT;
+						}
+						else if(tt2 == TokenType.DOUBLE) {
+							startTable.set(offset, new Start("i2d", new Pair()));
+							startTable.add(new Start("dsub", new Pair()));
+							tt1 = TokenType.DOUBLE;
+						}
+					}
+					else if(tt1 == TokenType.DOUBLE) {	
+						if(tt2 == TokenType.DOUBLE) {
+							startTable.add(new Start("dsub", new Pair()));
+						}
+						else {
+							startTable.add(new Start("i2d", new Pair()));
+							startTable.add(new Start("dsub", new Pair()));
+						}
+					}
 				}
 				else {
-					funcOpTable.get(funcNum-1).add(new FuncOption("isub", new Pair()));
+					if(tt1 == TokenType.INT) {
+						if(tt2 == TokenType.CHAR || tt2 == TokenType.INT) {
+							funcOpTable.get(funcNum-1).add(new FuncOption("isub", new Pair()));//无需转换类型
+							tt1 = TokenType.INT;
+						}
+						else if(tt2 == TokenType.DOUBLE) {
+							funcOpTable.get(funcNum-1).set(offset, new FuncOption("i2d", new Pair()));
+							funcOpTable.get(funcNum-1).add(new FuncOption("dsub", new Pair()));
+							tt1 = TokenType.DOUBLE;
+						}
+					}
+					else if(tt1 == TokenType.DOUBLE) {	
+						if(tt2 == TokenType.DOUBLE) {
+							funcOpTable.get(funcNum-1).add(new FuncOption("dsub", new Pair()));
+						}
+						else {
+							funcOpTable.get(funcNum-1).add(new FuncOption("i2d", new Pair()));
+							funcOpTable.get(funcNum-1).add(new FuncOption("dsub", new Pair()));
+						}
+					}
+					
 				}
 			}
 			token = nextToken();
 		}
 		unreadToken();
-		return null;
+		return new Error(tt1);
 	}
 	
-	// <项> -> <一元表达式> { <乘除符号> <一元表达式>}
+	// <项> -> <cast表达式> { <乘除符号> <cast表达式>}
+	
 	private Error mulExpre()  {
-		Error err = unaryExpre();
-		if(err != null) return err;
+		Error err = castExpre();
+		if(err.isError()) return err;
+		TokenType tt1 = err.getTokenType();
+		
 		Token token = nextToken();
+		
 		while(token.getTokenType() == TokenType.MUL_SIGN
 				|| token.getTokenType() == TokenType.DIV_SIGN) {
-			err = unaryExpre();
-			if(err != null) return err;
+			int offset;
+			if(level == 0) {
+				startTable.add(new Start("nop", new Pair()));//无需转换类型
+				offset = startTable.size()-1;
+			}
+			else {
+				funcOpTable.get(funcNum-1).add(new FuncOption("dmul", new Pair()));
+				offset = funcOpTable.get(funcNum-1).size()-1;
+			}
+			
+			err = castExpre();
+			if(err.isError()) return err;
+			TokenType tt2 = err.getTokenType();
 			if(token.getTokenType() == TokenType.MUL_SIGN) {
 				if(level == 0) {
-					startTable.add(new Start("imul", new Pair()));
+					if(tt1 == TokenType.INT || tt1 == TokenType.CHAR) {
+						if(tt2 == TokenType.CHAR || tt2 == TokenType.INT) {
+							startTable.add(new Start("imul", new Pair()));//无需转换类型
+							tt1 = TokenType.INT;
+						}
+						else if(tt2 == TokenType.DOUBLE) {
+							startTable.set(offset, new Start("i2d", new Pair()));
+							startTable.add(new Start("dmul", new Pair()));
+							tt1 = TokenType.DOUBLE;
+						}
+					}
+					else if(tt1 == TokenType.DOUBLE) {	
+						if(tt2 == TokenType.DOUBLE) {
+							startTable.add(new Start("dmul", new Pair()));
+						}
+						else {
+							startTable.add(new Start("i2d", new Pair()));
+							startTable.add(new Start("dmul", new Pair()));
+						}
+					}
 				}
 				else {
-					funcOpTable.get(funcNum-1).add(new FuncOption("imul", new Pair()));
+					if(tt1 == TokenType.INT) {
+						if(tt2 == TokenType.CHAR || tt2 == TokenType.INT) {
+							funcOpTable.get(funcNum-1).add(new FuncOption("imul", new Pair()));//无需转换类型
+							tt1 = TokenType.INT;
+						}
+						else if(tt2 == TokenType.DOUBLE) {
+							funcOpTable.get(funcNum-1).set(offset, new FuncOption("i2d", new Pair()));
+							funcOpTable.get(funcNum-1).add(new FuncOption("dmul", new Pair()));
+							tt1 = TokenType.DOUBLE;
+						}
+					}
+					else if(tt1 == TokenType.DOUBLE) {	
+						if(tt2 == TokenType.DOUBLE) {
+							funcOpTable.get(funcNum-1).add(new FuncOption("dmul", new Pair()));
+						}
+						else {
+							funcOpTable.get(funcNum-1).add(new FuncOption("i2d", new Pair()));
+							funcOpTable.get(funcNum-1).add(new FuncOption("dmul", new Pair()));
+						}
+					}
+					
 				}
 			}
 			else {
 				if(level == 0) {
-					startTable.add(new Start("idiv", new Pair()));
+					if(tt1 == TokenType.INT || tt1 == TokenType.CHAR) {
+						if(tt2 == TokenType.CHAR || tt2 == TokenType.INT) {
+							startTable.add(new Start("idiv", new Pair()));//无需转换类型
+							tt1 = TokenType.INT;
+						}
+						else if(tt2 == TokenType.DOUBLE) {
+							startTable.set(offset, new Start("i2d", new Pair()));
+							startTable.add(new Start("ddiv", new Pair()));
+							tt1 = TokenType.DOUBLE;
+						}
+					}
+					else if(tt1 == TokenType.DOUBLE) {	
+						if(tt2 == TokenType.DOUBLE) {
+							startTable.add(new Start("ddiv", new Pair()));
+						}
+						else {
+							startTable.add(new Start("i2d", new Pair()));
+							startTable.add(new Start("ddiv", new Pair()));
+						}
+					}
 				}
 				else {
-					funcOpTable.get(funcNum-1).add(new FuncOption("idiv", new Pair()));
+					if(tt1 == TokenType.INT) {
+						if(tt2 == TokenType.CHAR || tt2 == TokenType.INT) {
+							funcOpTable.get(funcNum-1).add(new FuncOption("idiv", new Pair()));//无需转换类型
+							tt1 = TokenType.INT;
+						}
+						else if(tt2 == TokenType.DOUBLE) {
+							funcOpTable.get(funcNum-1).set(offset, new FuncOption("i2d", new Pair()));
+							funcOpTable.get(funcNum-1).add(new FuncOption("ddiv", new Pair()));
+							tt1 = TokenType.DOUBLE;
+						}
+					}
+					else if(tt1 == TokenType.DOUBLE) {	
+						if(tt2 == TokenType.DOUBLE) {
+							funcOpTable.get(funcNum-1).add(new FuncOption("ddiv", new Pair()));
+						}
+						else {
+							funcOpTable.get(funcNum-1).add(new FuncOption("i2d", new Pair()));
+							funcOpTable.get(funcNum-1).add(new FuncOption("ddiv", new Pair()));
+						}
+					}
+					
 				}
 			}
 			token = nextToken();
 		}
 		unreadToken();//之前多读了一个不是＋和-的，回退
-		return null;
+		return new Error(tt1);
+	}
+	
+	
+	// <cast表达式> -> {'('<类型>')'}<一元表达式>
+	private Error castExpre() {
+		Token token = nextToken();
+		ArrayList<TokenType> typeList = new ArrayList<>();
+		while(token.getTokenType() == TokenType.LEFT_BRACKET) {
+			token = nextToken();
+			if(token.getTokenType() == TokenType.DOUBLE
+					|| token.getTokenType() == TokenType.INT
+					|| token.getTokenType() == TokenType.CHAR) {
+				typeList.add(token.getTokenType());
+			}
+			else {
+				unreadToken();
+				break;
+			}
+			token = nextToken();
+			if(token.getTokenType() != TokenType.RIGHT_BRACKET) {
+				return new Error(token.getPos(), ErrorType.NO_RIGHT_BRACKET);
+			}
+			token = nextToken();
+		}
+		unreadToken();
+		Error err = unaryExpre();
+		if(err.isError()) return err;
+		TokenType tt1 = err.getTokenType();
+//		System.out.println(tt1);
+		int len = typeList.size();
+		for(int i = len-1; i >= 0; i--) {
+			TokenType tt2 = typeList.get(i);
+			if(tt2 == TokenType.CHAR) {
+				if(tt1 == TokenType.DOUBLE) {
+					if(level == 0) {
+						startTable.add(new Start("d2i", new Pair()));
+						startTable.add(new Start("i2c", new Pair()));
+					}
+					else {
+						funcOpTable.get(funcNum-1).add(new FuncOption("d2i", new Pair()));
+						funcOpTable.get(funcNum-1).add(new FuncOption("i2c", new Pair()));
+					}
+					tt1 = TokenType.CHAR;
+				}
+				else if(tt1 == TokenType.INT) {
+					if(level == 0) {
+						startTable.add(new Start("i2c", new Pair()));
+					}
+					else {
+						funcOpTable.get(funcNum-1).add(new FuncOption("i2c", new Pair()));
+					}
+					tt1 = TokenType.CHAR;
+				}
+			}
+			else if(tt2 == TokenType.INT) {
+				if(tt1 == TokenType.DOUBLE) {
+					if(level == 0) {
+						startTable.add(new Start("d2i", new Pair()));
+					}
+					else {
+						funcOpTable.get(funcNum-1).add(new FuncOption("d2i", new Pair()));
+					}
+					tt1 = TokenType.INT;
+				}
+				else if(tt1 == TokenType.CHAR) {
+					tt1 = TokenType.INT;
+				}
+			}
+			else if(tt2 == TokenType.DOUBLE) {
+				if(tt1 == TokenType.INT) {
+					if(level == 0) {
+						startTable.add(new Start("i2d", new Pair()));
+					}
+					else {
+						funcOpTable.get(funcNum-1).add(new FuncOption("i2d", new Pair()));
+					}
+					tt1 = TokenType.DOUBLE;
+				}
+				else if(tt1 == TokenType.CHAR) {
+					if(level == 0) {
+						startTable.add(new Start("i2d", new Pair()));
+					}
+					else {
+						funcOpTable.get(funcNum-1).add(new FuncOption("i2d", new Pair()));
+					}
+					tt1 = TokenType.DOUBLE;
+				}
+			}
+		}
+		return new Error(tt1);
 	}
 	
 	// <一元表达式> -> [<一元操作符>] <主要表达式>
@@ -431,36 +811,46 @@ public class Analyser {
 		if(token.getTokenType() == TokenType.PLUS_SIGN 
 				|| token.getTokenType() == TokenType.MINUS_SIGN) {
 			Error err = priExpre();
-			if(err != null) return err;
+			if(err.isError()) return err;
 			if(token.getTokenType() == TokenType.MINUS_SIGN) {
 				if(level == 0) {
-					startTable.add(new Start("ineg", new Pair()));
+					if(err.getTokenType() == TokenType.INT || err.getTokenType() == TokenType.CHAR)
+						startTable.add(new Start("ineg", new Pair()));
+					else if(err.getTokenType() == TokenType.DOUBLE)
+						startTable.add(new Start("dneg", new Pair()));
 				}
 				else {
-					funcOpTable.get(funcNum-1).add(new FuncOption("ineg", new Pair()));
+					if(err.getTokenType() == TokenType.INT || err.getTokenType() == TokenType.CHAR)
+						funcOpTable.get(funcNum-1).add(new FuncOption("ineg", new Pair()));
+					else if(err.getTokenType() == TokenType.DOUBLE)
+						funcOpTable.get(funcNum-1).add(new FuncOption("dneg", new Pair()));
+					
 				}
 			}
+			return new Error(err.getTokenType());
 		}//代码生成的时候有用
 		else {
 			unreadToken();//回退
 			Error err = priExpre();
-			if(err != null) return err;
+			if(err.isError()) return err;
+			return new Error(err.getTokenType());
 		}
-		return null;
+		
 	}
 	
 	// <主要表达式> -> '(' <表达式> ')' | <标识符> | <数字> | <函数调用>
+	//标识符和表达式的类型还没判断
 	private Error priExpre()  {
 		Token token = nextToken();
 		
 		switch(token.getTokenType()) {
 			case LEFT_BRACKET:{
 				Error err = expression();
-				if(err == null) {
+				if(err.isError() == false) {
 					//为空 证明这是正确的 我们继续判断右括号
 					token = nextToken();
 					if(token.getTokenType() == TokenType.RIGHT_BRACKET)
-						return null;//正确 返回空
+						return new Error(err.getTokenType());//正确 返回空
 					else
 						return new Error(token.getPos(), ErrorType.NO_RIGHT_BRACKET);
 				}
@@ -477,22 +867,69 @@ public class Analyser {
 					return new Error(token.getPos(), ErrorType.NO_DECLARED);
 				else if(ik == IdentiKind.FUNCTION) {
 					String name = token.getValue();
-					if(findFunc(name).getRetType() == IdentiType.VOID)
+					IdentiType it = findFunc(name).getRetType();
+					if(it == IdentiType.VOID)
 						return new Error(token.getPos(), ErrorType.CANNOT_ASSIGN_VOID);
 					unreadToken();
 					Error err = funcCall(false);
-					if(err != null) return err;
+					if(err.isError()) return err;
+					if(it == IdentiType.CHAR) {
+						return new Error(TokenType.CHAR);
+					}
+					else if(it == IdentiType.INT) {
+						return new Error(TokenType.INT);
+					}
+					else if(it == IdentiType.DOUBLE) {
+						return new Error(TokenType.DOUBLE);
+					}
 				}
 				else {//变量和参数，获取地址，加载值
 					//先判断是否是void
+					IdentiType it = getIdentiType(token.getValue());
 					Pair p1 = getLevelandIndex(token.getValue());
 					if(level == 0) {
-						startTable.add(new Start("loada", p1));
-						startTable.add(new Start("iload", new Pair()));
+						if(it == IdentiType.INT) {
+							startTable.add(new Start("loada", p1));
+							startTable.add(new Start("iload", new Pair()));
+							return new Error(TokenType.INT);
+						}
+						else if(it == IdentiType.CHAR) {
+							startTable.add(new Start("loada", p1));
+							startTable.add(new Start("iload", new Pair()));
+							return new Error(TokenType.CHAR);
+						}
+						else if(it == IdentiType.DOUBLE) {
+							startTable.add(new Start("loada", p1));
+							startTable.add(new Start("dload", new Pair()));
+							return new Error(TokenType.DOUBLE);
+						}
 					}
 					else {
-						funcOpTable.get(funcNum-1).add(new FuncOption("loada", p1));
-						funcOpTable.get(funcNum-1).add(new FuncOption("iload", new Pair()));
+						if(it == IdentiType.INT) {
+							funcOpTable.get(funcNum-1).add(new FuncOption("loada", p1));
+							funcOpTable.get(funcNum-1).add(new FuncOption("iload", new Pair()));
+							return new Error(TokenType.INT);
+						}
+						else if(it == IdentiType.CHAR) {
+							funcOpTable.get(funcNum-1).add(new FuncOption("loada", p1));
+							funcOpTable.get(funcNum-1).add(new FuncOption("iload", new Pair()));
+							return new Error(TokenType.CHAR);
+						}
+						else if(it == IdentiType.DOUBLE) {
+							funcOpTable.get(funcNum-1).add(new FuncOption("loada", p1));
+							funcOpTable.get(funcNum-1).add(new FuncOption("dload", new Pair()));
+							return new Error(TokenType.DOUBLE);
+						}
+						
+					}
+					if(it == IdentiType.CHAR) {
+						return new Error(TokenType.CHAR);
+					}
+					else if(it == IdentiType.INT) {
+						return new Error(TokenType.INT);
+					}
+					else if(it == IdentiType.DOUBLE) {
+						return new Error(TokenType.DOUBLE);
 					}
 				}
 				break;
@@ -505,13 +942,34 @@ public class Analyser {
 				else {
 					funcOpTable.get(funcNum-1).add(new FuncOption("ipush", new Pair(Integer.valueOf(token.getValue()))));
 				}
-				break;
+				return new Error(TokenType.INT);//告诉上边的我这是个int整数
+			}
+			case CHARACTER:{
+				if(level == 0) {
+					startTable.add(new Start("bipush", new Pair((int)token.getValue().charAt(0))));
+				}
+				else {
+					funcOpTable.get(funcNum-1).add(new FuncOption("bipush", new Pair((int)token.getValue().charAt(0))));
+				}
+				return new Error(TokenType.CHAR);
+			}
+			case DOUBLE_DIGIT:{
+				//在常量表里添加这个double
+				constTable.add(new Constant(constIndex, "D", Double.parseDouble(token.getValue())));
+				if(level == 0) {
+					startTable.add(new Start("loadc", new Pair(constIndex)));
+				}
+				else {
+					funcOpTable.get(funcNum-1).add(new FuncOption("loadc", new Pair(constIndex)));
+				}
+				constIndex++;
+				return new Error(TokenType.DOUBLE);
 			}
 			default:{
 				return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 			}
 		}
-		return null;
+		return new Error();
 	}
 	
 	//<函数声明> -> <类型><标识符><参数><合成语句>
@@ -519,16 +977,25 @@ public class Analyser {
 	private Error funcDef() {
 		//类型
 		Token token = nextToken();
-		IdentiType it;
+		retType = token.getTokenType();
+		IdentiType it = null;
 		if(token.getTokenType() != TokenType.VOID
-				&& token.getTokenType() != TokenType.INT) {
+				&& token.getTokenType() != TokenType.INT
+				&& token.getTokenType() != TokenType.DOUBLE
+				&& token.getTokenType() != TokenType.CHAR) {
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 		}
 		else if(token.getTokenType() == TokenType.VOID) {
 			it = IdentiType.VOID;
 		}
-		else {
+		else if(token.getTokenType() == TokenType.INT){
 			it = IdentiType.INT;
+		}
+		else if(token.getTokenType() == TokenType.DOUBLE) {
+			it = IdentiType.DOUBLE;
+		}
+		else if(token.getTokenType() == TokenType.CHAR) {
+			it = IdentiType.CHAR;
 		}
 		//标识符 也即函数名
 		token = nextToken();
@@ -543,7 +1010,7 @@ public class Analyser {
 		//参数
 		paraList.clear();
 		Error err = paraClause();
-		if(err != null) return err;
+		if(err.isError()) return err;
 		//常量表
 		constTable.add(new Constant(constIndex, "S", name));
 		//函数表
@@ -555,16 +1022,22 @@ public class Analyser {
 		funcOpTable.add(new ArrayList<FuncOption>());
 		funcNum ++;
 		err = compoundState();
-		if(err != null) return err;
+		if(err.isError()) return err;
 		//无脑加返回指令
 		if(it == IdentiType.VOID) {
 			funcOpTable.get(funcNum-1).add(new FuncOption("ret", new Pair()));
 		}
 		else {//返回一个0
-			funcOpTable.get(funcNum-1).add(new FuncOption("ipush", new Pair(0)));
-			funcOpTable.get(funcNum-1).add(new FuncOption("iret", new Pair()));
+			if(it == IdentiType.CHAR || it == IdentiType.INT) {
+				funcOpTable.get(funcNum-1).add(new FuncOption("ipush", new Pair(0)));
+				funcOpTable.get(funcNum-1).add(new FuncOption("iret", new Pair()));
+			}
+			else if(it == IdentiType.DOUBLE) {
+				funcOpTable.get(funcNum-1).add(new FuncOption("snew", new Pair(2)));
+				funcOpTable.get(funcNum-1).add(new FuncOption("dret", new Pair()));
+			}
 		}
-		return null;
+		return new Error();
 	}
 	
 	//<参数> -> '(' [<参数声明列表>] ')'
@@ -579,9 +1052,11 @@ public class Analyser {
 		token = nextToken();
 		unreadToken();//预读
 		if(token.getTokenType() == TokenType.INT
-				|| token.getTokenType() == TokenType.CONST) {
+				|| token.getTokenType() == TokenType.CONST
+				|| token.getTokenType() == TokenType.DOUBLE
+				|| token.getTokenType() == TokenType.CHAR) {
 			Error err = paraDecList();
-			if(err != null) return err;
+			if(err.isError()) return err;
 		}
 		
 		token = nextToken();
@@ -590,21 +1065,21 @@ public class Analyser {
 		
 		level--;
 		
-		return null;
+		return new Error();
 	}
 	
 	//<参数声明列表> -> <参数声明>{ ',' <参数声明>}
 	private Error paraDecList() {
 		Error err = paraDec();
-		if(err != null) return err;
+		if(err.isError()) return err;
 		Token token = nextToken();
 		while(token.getTokenType() == TokenType.COMMA) {
 			err = paraDec();
-			if(err != null) return err;
+			if(err.isError()) return err;
 			token = nextToken();
 		}
 		unreadToken();
-		return null;
+		return new Error();
 	}
 	
 	//<参数声明> -> [<const>]<类型> <标识符>
@@ -617,7 +1092,10 @@ public class Analyser {
 			isConst = true;
 		}
 			
-		if(token.getTokenType() != TokenType.INT)
+		TokenType tt = token.getTokenType();
+		if(tt != TokenType.INT
+				&& tt != TokenType.DOUBLE
+				&& tt != TokenType.CHAR)
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 		
 		token = nextToken();
@@ -628,19 +1106,44 @@ public class Analyser {
 		//参数进符号表,参数也要判断是否和本作用域重名,因为有可能参数里重名
 		if(isSecondName(token.getValue()))
 			return new Error(token.getPos(), ErrorType.DUPLICATE_DECLARATION);
+		
+		IdentiType it = null;
 		//索引表需要记下参数
 		if(isConst) {
-			paraList.add(new Pair(token.getValue(), IdentiType.CONST_INT));
+			if(tt == TokenType.INT) {
+				paraList.add(new Pair(token.getValue(), IdentiType.CONST_INT));
+				it = IdentiType.CONST_INT;
+			}
+			else if(tt == TokenType.DOUBLE){
+				paraList.add(new Pair(token.getValue(), IdentiType.CONST_DOUBLE));
+				it = IdentiType.CONST_DOUBLE;
+			}
+			else if(tt == TokenType.CHAR) {
+				paraList.add(new Pair(token.getValue(), IdentiType.CONST_CHAR));
+				it = IdentiType.CONST_CHAR;
+			}
 		}
 		else {
-			paraList.add(new Pair(token.getValue(), IdentiType.INT));
+			if(tt == TokenType.INT) {
+				paraList.add(new Pair(token.getValue(), IdentiType.INT));
+				it = IdentiType.INT;
+			}
+			else if(tt == TokenType.DOUBLE){
+				paraList.add(new Pair(token.getValue(), IdentiType.DOUBLE));
+				it = IdentiType.DOUBLE;
+			}
+			else if(tt == TokenType.CHAR) {
+				paraList.add(new Pair(token.getValue(), IdentiType.CHAR));
+				it = IdentiType.CHAR;
+			}
 		}
-		if(isConst)
-			symbolTable.push(new Symbol(token, IdentiType.CONST_INT, IdentiKind.PARAMETER, level));
+		if(isConst) {
+			symbolTable.push(new Symbol(token, it, IdentiKind.PARAMETER, level));
+		}
 		else
-			symbolTable.push(new Symbol(token, IdentiType.INT, IdentiKind.PARAMETER, level));
+			symbolTable.push(new Symbol(token, it, IdentiKind.PARAMETER, level));
 		
-		return null;
+		return new Error();
 	}
 	
 	//<函数调用> -> <标识符> '(' [<表达式列表>] ')'
@@ -655,9 +1158,9 @@ public class Analyser {
 			return new Error(token.getPos(), ErrorType.NO_DECLARED);
 		}
 		
-		//这里还没有判断参数是否相同 我脑子太乱了 以后再写 开动！
-		//嘿嘿嘿,基础C0的参数只有int和const int，这两个不用区分啊嘿嘿嘿
-		//所以目前只需要判断数量是否一致
+		////嘿嘿嘿,基础C0的参数只有int和const int，这两个不用区分啊嘿嘿嘿
+		////所以目前只需要判断数量是否一致
+		//强制类型转换
 		paraNum = 0;//置零
 		token = nextToken();
 		if(token.getTokenType() != TokenType.LEFT_BRACKET)
@@ -666,42 +1169,48 @@ public class Analyser {
 		token = nextToken();
 		if(token.getTokenType() != TokenType.RIGHT_BRACKET) {
 			unreadToken();
-			Error err = expreList();
-			if(err != null) return err;
+			Error err = expreList(findFunc(name).getTokenType());
+			if(err.isError()) return err;
 			token = nextToken();
 			if(token.getTokenType() != TokenType.RIGHT_BRACKET)
 				return new Error(token.getPos(), ErrorType.NO_RIGHT_BRACKET);
 		}
-		if(paraNum != findFunc(name).getParaNum()) {
-//			System.out.println(paraNum);
-//			System.out.println(findFunc(name).getParaNum());
-//			System.out.println(name);
-			return new Error(token.getPos(), ErrorType.PARAMETER_TYPE_ERROR);
-		}
+//		if(paraNum != findFunc(name).getParaNum()) {
+//			return new Error(token.getPos(), ErrorType.PARAMETER_TYPE_ERROR);
+//		}
+		
 		
 		//如果这些都没错 那我就call
 		funcOpTable.get(funcNum-1).add(new FuncOption("call", new Pair(index1)));
 		//如果是空 本来就没有返回值 就不要pop了
-		if(isPop && indexTable.get(index1).getRetType() != IdentiType.VOID) {
-			funcOpTable.get(funcNum-1).add(new FuncOption("pop", new Pair()));
-		}
-		return null;
+//		if(isPop && indexTable.get(index1).getRetType() != IdentiType.VOID) {
+//			funcOpTable.get(funcNum-1).add(new FuncOption("pop", new Pair()));
+//		}
+		return new Error();
 	}
 	
 	//<表达式列表> -> <表达式> { ','<表达式> }
-	private Error expreList()  {
-		Error err = expression();
-		if(err != null) return err;
-		paraNum++;
-		Token token = nextToken();
-		while(token.getTokenType() == TokenType.COMMA) {
-			err = expression();
-			if(err != null) return err;
-			paraNum++;
-			token = nextToken();
+	private Error expreList(ArrayList<TokenType> paraList)  {
+		int num = paraList.size();
+//		ArrayList<TokenType> paraCallType = new ArrayList<>();
+		
+		for(int i = 0; i < num; i++) {
+			Error err = expression();
+			if(err.isError()) return err;
+//			System.out.println(err.getTokenType());
+//			System.out.println(paraList.get(i));
+			transType(err.getTokenType(), paraList.get(i));
+			Token token = nextToken();
+			if(token.getTokenType() != TokenType.COMMA) {
+				if(i != num-1) {
+					return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
+				}
+				else {
+					unreadToken();
+				}
+			}
 		}
-		unreadToken();
-		return null;
+		return new Error();
 	}
 	
 	//<合成语句> -> '{' {<变量声明>}<语句序列> '}'
@@ -714,16 +1223,18 @@ public class Analyser {
 		
 		token = nextToken();
 		while(token.getTokenType() == TokenType.CONST
-				|| token.getTokenType() == TokenType.INT) {
+				|| token.getTokenType() == TokenType.INT
+				|| token.getTokenType() == TokenType.DOUBLE
+				|| token.getTokenType() == TokenType.CHAR) {
 			unreadToken();
 			Error err = varDec();
-			if(err != null) return err;
+			if(err.isError()) return err;
 			token = nextToken();
 		}
 		unreadToken();
 		if(isStatementHead(token)) {
 			Error err = stateSeq();
-			if(err != null) return err;
+			if(err.isError()) return err;
 		}
 		token = nextToken();
 		if(token.getTokenType() != TokenType.RIGHT_BRACE)
@@ -745,7 +1256,7 @@ public class Analyser {
 		
 		level--;
 		
-		return null;
+		return new Error();
 	}
 	
 	//<语句序列> -> {<语句>}
@@ -754,11 +1265,11 @@ public class Analyser {
 		while(isStatementHead(token)) {
 			unreadToken();
 			Error err = statement();
-			if(err != null) return err;
+			if(err.isError()) return err;
 			token = nextToken();
 		}
 		unreadToken();
-		return null;
+		return new Error();
 	}
 	
 	//<语句> -> '{' <语句序列> '}' | <条件语句> | <循环语句>
@@ -770,7 +1281,7 @@ public class Analyser {
 			case LEFT_BRACE:{
 				level++;
 				Error err = stateSeq();
-				if(err != null) return err;
+				if(err.isError()) return err;
 				token = nextToken();
 				if(token.getTokenType() != TokenType.RIGHT_BRACE)
 					return new Error(token.getPos(), ErrorType.NO_RIGHT_BRACE);
@@ -786,31 +1297,31 @@ public class Analyser {
 			case IF:{
 				unreadToken();
 				Error err = conditionState();
-				if(err != null) return err;
+				if(err.isError()) return err;
 				break;
 			}
 			case WHILE:{
 				unreadToken();
 				Error err = loopState();
-				if(err != null) return err;
+				if(err.isError()) return err;
 				break;
 			}
 			case RETURN:{
 				unreadToken();
 				Error err = jumpState();
-				if(err != null) return err;
+				if(err.isError()) return err;
 				break;
 			}
 			case PRINT:{
 				unreadToken();
 				Error err = printState();
-				if(err != null) return err;
+				if(err.isError()) return err;
 				break;
 			}
 			case SCAN:{
 				unreadToken();
 				Error err = scanState();
-				if(err != null) return err;
+				if(err.isError()) return err;
 				break;
 			}
 			case IDENTIFIER:{
@@ -820,12 +1331,12 @@ public class Analyser {
 				if(ik == IdentiKind.FUNCTION) {
 					unreadToken();
 					Error err = funcCall(true);
-					if(err != null) return err;
+					if(err.isError()) return err;
 				}
 				else {
 					unreadToken();
 					Error err = assignExpre();
-					if(err != null) return err;
+					if(err.isError()) return err;
 				}
 				token = nextToken();
 				if(token.getTokenType() != TokenType.SEMICOLON)
@@ -838,14 +1349,14 @@ public class Analyser {
 				return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 			}
 		}
-		return null;
+		return new Error();
 	}
 	
 	//<跳转语句> -> <返回语句>
 	private Error jumpState()  {
 		Error err = retState();
-		if(err != null) return err;
-		return null;
+		if(err.isError()) return err;
+		return new Error();
 	}
 	
 	//<返回语句> -> 'return' [<表达式>] ';'
@@ -861,8 +1372,13 @@ public class Analyser {
 			}
 			unreadToken();
 			Error err = expression();
-			if(err != null) return err;
-			funcOpTable.get(funcNum-1).add(new FuncOption("iret", new Pair()));
+			if(err.isError()) return err;
+			transType(err.getTokenType(), retType);
+			if(retType == TokenType.INT || retType == TokenType.CHAR)
+				funcOpTable.get(funcNum-1).add(new FuncOption("iret", new Pair()));
+			else if(retType == TokenType.DOUBLE)
+				funcOpTable.get(funcNum-1).add(new FuncOption("dret", new Pair()));
+				
 			token = nextToken();
 			if(token.getTokenType() != TokenType.SEMICOLON)
 				return new Error(token.getPos(), ErrorType.NO_SEMICOLON_ERROR);
@@ -874,7 +1390,7 @@ public class Analyser {
 				return new Error(token.getPos(), ErrorType.RUTURN_VALUE_TYPE_ERROR);
 			}
 		}
-		return null;
+		return new Error();
 	}
 	
 	//<条件语句> -> 'if' '(' <状态> ')'<语句> ['else'<语句>]
@@ -888,7 +1404,7 @@ public class Analyser {
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 		
 		Error err = condition();
-		if(err != null) return err;
+		if(err.isError()) return err;
 		
 		token = nextToken();
 		if(token.getTokenType() != TokenType.RIGHT_BRACKET)
@@ -906,7 +1422,7 @@ public class Analyser {
 //		}
 			
 		
-		if(err != null) return err;
+		if(err.isError()) return err;
 		
 		token = nextToken();
 		if(token.getTokenType() != TokenType.ELSE) {
@@ -928,11 +1444,11 @@ public class Analyser {
 //				unreadToken();
 //				err = statement();
 //			}
-			if(err != null) return err;
+			if(err.isError()) return err;
 			setJmpInstruct();
 		}
 		
-		return null;
+		return new Error();
 	}
 	
 	//<循环语句> -> 'while' '('<状态>')'<合成语句>
@@ -948,7 +1464,7 @@ public class Analyser {
 		//这将会成为condition里第一句指令的下标
 		int index1 = funcOpTable.get (funcNum-1).size();
 		Error err = condition();
-		if(err != null) return err;
+		if(err.isError()) return err;
 		
 		token = nextToken();
 		if(token.getTokenType() != TokenType.RIGHT_BRACKET)
@@ -964,10 +1480,10 @@ public class Analyser {
 //			unreadToken();
 //			err = statement();
 //		}
-		if(err != null) return err;
+		if(err.isError()) return err;
 		funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair(index1)));
 		setJmpInstruct();
-		return null;
+		return new Error();
 	}
 	
 	//<输入语句> -> 'scan' '('<标识符>')' ';'
@@ -1000,7 +1516,7 @@ public class Analyser {
 		token = nextToken();
 		if(token.getTokenType() != TokenType.SEMICOLON)
 			return new Error(token.getPos(), ErrorType.NO_SEMICOLON_ERROR);
-		return null;
+		return new Error();
 	}
 	
 	//<输出语句> -> 'print' '('[<输出列表>]')'';'
@@ -1017,7 +1533,7 @@ public class Analyser {
 		if(token.getTokenType() != TokenType.RIGHT_BRACKET) {
 			unreadToken();
 			Error err = printList();
-			if(err != null) return err;
+			if(err.isError()) return err;
 			token = nextToken();
 			if(token.getTokenType() != TokenType.RIGHT_BRACKET)
 				return new Error(token.getPos(), ErrorType.NO_RIGHT_BRACKET);
@@ -1029,23 +1545,23 @@ public class Analyser {
 		//输出换行
 		funcOpTable.get(funcNum-1).add(new FuncOption("printl", new Pair()));
 		
-		return null;
+		return new Error();
 	}
 	
 	//<输出列表> -> <输出> { ',' <输出> }
 	private Error printList()  {
 		Error err = print();
-		if(err != null) return err;
+		if(err.isError()) return err;
 		Token token = nextToken();
 		while(token.getTokenType() == TokenType.COMMA) {
 			funcOpTable.get(funcNum-1).add(new FuncOption("bipush", new Pair(32)));
 			funcOpTable.get(funcNum-1).add(new FuncOption("cprint", new Pair()));
 			err = print();
-			if(err != null) return err;
+			if(err.isError()) return err;
 			token = nextToken();
 		}
 		unreadToken();
-		return null;
+		return new Error();
 	}
 	
 	//<输出> -> <表达式> | <字符> | <字符串>
@@ -1072,11 +1588,11 @@ public class Analyser {
 		else {
 			unreadToken();
 			Error err = expression();
-			if(err != null) return err;
+			if(err.isError()) return err;
 			funcOpTable.get(funcNum-1).add(new FuncOption("iprint", new Pair()));
 		}
 		
-		return null;
+		return new Error();
 	}
 	
 	private Token nextToken() {
@@ -1156,22 +1672,31 @@ public class Analyser {
 	}
 	
 	//前提是已经经过1的判断了
-	private boolean isAbleToAssign2(String name) {
+	private TokenType isAbleToAssign2(String name) {
 		Stack<Symbol> tmp = new Stack<Symbol>();
-		boolean flag = false;
+		
+		TokenType tt = null;
 		while(symbolTable.size() != 0) {
 			Symbol sb = symbolTable.pop();
 			tmp.push(sb);
-			if(sb.getName().equals(name) 
-					&& sb.getType() == IdentiType.INT) {
-				flag = true;//可合法赋值
+			if(sb.getName().equals(name)) {
+				//可合法赋值
+				if(sb.getType() == IdentiType.CHAR) {
+					tt = TokenType.CHAR;
+				}
+				else if(sb.getType() == IdentiType.INT) {
+					tt = TokenType.INT;
+				}
+				else if(sb.getType() == IdentiType.DOUBLE) {
+					tt = TokenType.DOUBLE;
+				}
 				break;
 			}
 		}
 		while(tmp.size() != 0) {
 			symbolTable.push(tmp.pop());//倒回来
 		}
-		return flag;
+		return tt;
 	}
 	
 	//判断这个单词是否存在 若存在 是否是变量或者可变参数 给scan用
@@ -1183,7 +1708,8 @@ public class Analyser {
 			tmp.push(sb);
 			if(sb.getName().equals(name) 
 					&& (sb.getKind() == IdentiKind.PARAMETER || sb.getKind() == IdentiKind.VARIABLE)
-					&& sb.getType() == IdentiType.INT) {
+					&& (sb.getType() == IdentiType.INT || sb.getType() == IdentiType.CHAR
+					|| sb.getType() == IdentiType.DOUBLE)) {
 				flag = true;//可合法赋值
 				break;
 			}
@@ -1231,8 +1757,9 @@ public class Analyser {
 		while(tmp.size() != 0) {
 			symbolTable.push(tmp.pop());//倒回来
 		}
-		return ik;//表示没找到
+		return ik;//ik==null表示没找到
 	}
+	
 	
 	private IdentiKind isAlreadyDecAndNoVoid(String name) {
 		Stack<Symbol> tmp = new Stack<Symbol>();
@@ -1260,17 +1787,28 @@ public class Analyser {
 		while(tmp.size() != 0) {
 			symbolTable.push(tmp.pop());//倒回来
 		}
-		return ik;//表示没找到
+		return ik;//ik==null表示没找到
 	}
 	
-	//是否是常量的开始
+	//判断是否是int，double或者char
+	private boolean isOkType(TokenType type) {
+		if(type == TokenType.INT || type == TokenType.DOUBLE || type == TokenType.CHAR) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	//是否是变量的开始
+	//变量开始const ... | (int | double | char) identifier
 	private boolean isVariableHead() {
 		Token token = nextToken();
 		if(token.getTokenType() == TokenType.CONST) {
 			unreadToken();
 			return true;
 		}
-		else if(token.getTokenType() == TokenType.INT) {
+		else if(isOkType(token.getTokenType())) {
 			token = nextToken();
 			if(token.getTokenType() == TokenType.IDENTIFIER) {
 				token = nextToken();
@@ -1290,13 +1828,14 @@ public class Analyser {
 	}
 	
 	//是否是函数的开始
+	//函数开始void|int|double|char
 	private boolean isFuncHead() {
 		Token token = nextToken();
 		if(token.getTokenType() == TokenType.VOID) {
 			unreadToken();
 			return true;
 		}
-		else if(token.getTokenType() == TokenType.INT) {
+		else if(isOkType(token.getTokenType())) {
 			token = nextToken();
 			if(token.getTokenType() == TokenType.IDENTIFIER) {
 				token = nextToken();
@@ -1355,7 +1894,11 @@ public class Analyser {
 					while(symbolTable.size() != 0) {
 						Symbol sb1 = symbolTable.peek();
 						if(sb1.getLevel() == 1) {
-							index1 ++;
+							if(sb1.getType() == IdentiType.DOUBLE ||
+									sb1.getType() == IdentiType.CONST_DOUBLE)
+								index1 += 2;
+							else
+								index1 ++;
 							symbolTable.pop();
 							tmp.push(sb1);
 						}
@@ -1372,7 +1915,11 @@ public class Analyser {
 					while(symbolTable.size() != 0) {
 						Symbol sb1 = symbolTable.pop();
 						tmp.push(sb1);
-						index1++;
+						if(sb1.getType() == IdentiType.DOUBLE ||
+								sb1.getType() == IdentiType.CONST_DOUBLE)
+							index1 += 2;
+						else
+							index1 ++;
 					}
 				}
 				break;
@@ -1440,6 +1987,84 @@ public class Analyser {
 		}
 	}
 	
+	//肯定存在，但是我想知道它的类型
+	private IdentiType getIdentiType(String name) {
+		Stack<Symbol> tmp = new Stack<Symbol>();
+		IdentiType it = null;
+		while(symbolTable.size() != 0) {//从里往外找到的第一个同名的就是
+			Symbol sb = symbolTable.pop();
+			tmp.push(sb);
+			if(sb.getName().equals(name)) {
+				it = sb.getType();
+				break;
+			}
+		}
+		while(tmp.size() != 0) {
+			symbolTable.push(tmp.pop());//倒回来
+		}
+		return it;
+	}
+	
+	//tt2是目标
+	private TokenType transType(TokenType tt1, TokenType tt2) {
+		if(tt2 == TokenType.CHAR) {
+			if(tt1 == TokenType.DOUBLE) {
+				if(level == 0) {
+					startTable.add(new Start("d2i", new Pair()));
+					startTable.add(new Start("i2c", new Pair()));
+				}
+				else {
+					funcOpTable.get(funcNum-1).add(new FuncOption("d2i", new Pair()));
+					funcOpTable.get(funcNum-1).add(new FuncOption("i2c", new Pair()));
+				}
+				tt1 = TokenType.CHAR;
+			}
+			else if(tt1 == TokenType.INT) {
+				if(level == 0) {
+					startTable.add(new Start("i2c", new Pair()));
+				}
+				else {
+					funcOpTable.get(funcNum-1).add(new FuncOption("i2c", new Pair()));
+				}
+				tt1 = TokenType.CHAR;
+			}
+		}
+		else if(tt2 == TokenType.INT) {
+			if(tt1 == TokenType.DOUBLE) {
+				if(level == 0) {
+					startTable.add(new Start("d2i", new Pair()));
+				}
+				else {
+					funcOpTable.get(funcNum-1).add(new FuncOption("d2i", new Pair()));
+				}
+				tt1 = TokenType.INT;
+			}
+			else if(tt1 == TokenType.CHAR) {
+				tt1 = TokenType.INT;
+			}
+		}
+		else if(tt2 == TokenType.DOUBLE) {
+			if(tt1 == TokenType.INT) {
+				if(level == 0) {
+					startTable.add(new Start("i2d", new Pair()));
+				}
+				else {
+					funcOpTable.get(funcNum-1).add(new FuncOption("i2d", new Pair()));
+				}
+				tt1 = TokenType.DOUBLE;
+			}
+			else if(tt1 == TokenType.CHAR) {
+				if(level == 0) {
+					startTable.add(new Start("i2d", new Pair()));
+				}
+				else {
+					funcOpTable.get(funcNum-1).add(new FuncOption("i2d", new Pair()));
+				}
+				tt1 = TokenType.DOUBLE;
+			}
+		}
+		return tt1;
+	}
 }
 
 

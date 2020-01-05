@@ -25,6 +25,9 @@ public enum TokenType {
 	STRING,//字符串
 	//十进制整数
 	DEC_INTEGER, 
+	INTEGER,
+	//double
+	DOUBLE_DIGIT,
 	//十六进制整数
 	HEX_INTEGER,
 	//标识符
