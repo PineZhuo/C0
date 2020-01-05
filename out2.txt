@@ -10,22 +10,30 @@
 .F0:
 0 loada 0,0
 1 dload 
-2 nop 
-3 ipush 0
-4 i2d 
-5 dcmp 
-6 jl 8
-7 jmp 13
-8 loada 0,0
-9 loada 0,0
-10 dload 
-11 dneg 
-12 dstore 
+2 dprint 
+3 printl 
+4 loada 0,0
+5 dload 
+6 nop 
+7 ipush 0
+8 i2d 
+9 dcmp 
+10 jl 12
+11 jmp 17
+12 loada 0,0
 13 loada 0,0
 14 dload 
-15 dret 
-16 snew 2
-17 dret 
+15 dneg 
+16 dstore 
+17 loada 0,0
+18 dload 
+19 dprint 
+20 printl 
+21 loada 0,0
+22 dload 
+23 dret 
+24 snew 2
+25 dret 
 .F1:
 0 loadc 2
 1 dneg 

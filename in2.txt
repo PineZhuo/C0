@@ -1,5 +1,7 @@
 double fabs(double a) {
+	print(a);
     if (a < 0) a = -a;
+	print(a);
     return a;
 }
 
