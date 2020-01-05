@@ -1,0 +1,145 @@
+.constants:
+0 S "mod"
+1 S "tohex"
+2 S "main"
+3 S "input a positive integer"
+4 S "mod is:"
+.start:
+.functions:
+0 0 2 1
+1 1 1 1
+2 2 0 1
+.F0:
+0 loada 0,0
+1 iload 
+2 nop 
+3 loada 0,1
+4 iload 
+5 idiv 
+6 loada 0,0
+7 iload 
+8 nop 
+9 loada 0,1
+10 iload 
+11 nop 
+12 loada 0,2
+13 iload 
+14 imul 
+15 isub 
+16 iret 
+17 ipush 0
+18 iret 
+.F1:
+0 loada 0,0
+1 iload 
+2 nop 
+3 ipush 0
+4 icmp 
+5 jl 7
+6 jmp 9
+7 bipush 63
+8 iret 
+9 loada 0,0
+10 iload 
+11 nop 
+12 ipush 16
+13 icmp 
+14 jge 16
+15 jmp 18
+16 bipush 63
+17 iret 
+18 loada 0,0
+19 iload 
+20 nop 
+21 ipush 10
+22 icmp 
+23 jl 25
+24 jmp 30
+25 bipush 48
+26 nop 
+27 loada 0,0
+28 iload 
+29 iret 
+30 bipush 97
+31 nop 
+32 loada 0,0
+33 iload 
+34 nop 
+35 ipush 10
+36 isub 
+37 iret 
+38 ipush 0
+39 iret 
+.F2:
+0 ipush 0
+1 ipush 0
+2 bipush 0
+3 loadc 3
+4 sprint 
+5 printl 
+6 loada 0,1
+7 iload 
+8 nop 
+9 ipush 6
+10 icmp 
+11 jl 13
+12 jmp 68
+13 loada 0,0
+14 iscan 
+15 istore 
+16 loadc 4
+17 sprint 
+18 bipush 32
+19 cprint 
+20 loada 0,0
+21 iload 
+22 ipush 16
+23 call 0
+24 iprint 
+25 printl 
+26 loada 0,2
+27 loada 0,0
+28 iload 
+29 ipush 16
+30 call 0
+31 call 1
+32 i2c 
+33 istore 
+34 loada 0,0
+35 loada 0,0
+36 iload 
+37 nop 
+38 ipush 16
+39 idiv 
+40 istore 
+41 loada 0,0
+42 iload 
+43 ipush 16
+44 call 0
+45 call 1
+46 iprint 
+47 bipush 32
+48 cprint 
+49 loada 0,2
+50 iload 
+51 iprint 
+52 printl 
+53 loada 0,1
+54 loada 0,1
+55 iload 
+56 nop 
+57 ipush 1
+58 iadd 
+59 istore 
+60 loada 0,0
+61 loada 0,0
+62 iload 
+63 nop 
+64 ipush 16
+65 idiv 
+66 istore 
+67 jmp 6
+68 ipush 0
+69 iret 
+70 ipush 0
+71 iret 

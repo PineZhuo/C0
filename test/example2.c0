@@ -1,0 +1,10 @@
+int main(){
+     int year = 0+2019;
+     const int month = year - 2007;
+     int day;
+     print(1721);
+     print(2019,12,19);
+     day=0- -(+(-(+(-26))));
+     print(year,month,day);
+     return  0;
+ }

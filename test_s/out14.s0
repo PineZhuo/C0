@@ -1,0 +1,14 @@
+.constants:
+0 S "main"
+1 S "\\\V"
+.start:
+.functions:
+0 0 0 1
+.F0:
+0 loadc 1
+1 sprint 
+2 printl 
+3 ipush 0
+4 iret 
+5 ipush 0
+6 iret 

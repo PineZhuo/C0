@@ -1,0 +1,114 @@
+.constants:
+0 D 0x400921fb4d12d84a
+1 S "fib"
+2 S "main"
+.start:
+0 loadc 0
+1 ipush 47806
+2 ipush 0
+.functions:
+0 1 1 1
+1 2 0 1
+.F0:
+0 loada 0,0
+1 iload 
+2 nop 
+3 ipush 0
+4 icmp 
+5 jle 7
+6 jmp 11
+7 ipush 0
+8 i2c 
+9 iret 
+10 jmp 36
+11 loada 0,0
+12 iload 
+13 nop 
+14 ipush 1
+15 icmp 
+16 je 18
+17 jmp 22
+18 ipush 1
+19 i2c 
+20 iret 
+21 jmp 36
+22 loada 0,0
+23 iload 
+24 nop 
+25 ipush 2
+26 isub 
+27 call 0
+28 nop 
+29 loada 0,0
+30 iload 
+31 nop 
+32 ipush 1
+33 isub 
+34 call 0
+35 iret 
+36 ipush 0
+37 iret 
+.F1:
+0 ipush 0
+1 ipush 0
+2 loada 1,3
+3 iscan 
+4 istore 
+5 loada 1,0
+6 loada 1,0
+7 dload 
+8 nop 
+9 ipush 3
+10 i2d 
+11 dmul 
+12 dstore 
+13 loada 1,3
+14 iload 
+15 nop 
+16 ipush 21
+17 icmp 
+18 jg 20
+19 jmp 24
+20 loada 1,3
+21 ipush 21
+22 istore 
+23 jmp 38
+24 loada 1,3
+25 iload 
+26 nop 
+27 ipush 0
+28 icmp 
+29 jl 31
+30 jmp 38
+31 ipush 1
+32 ineg 
+33 iprint 
+34 printl 
+35 ipush 0
+36 iret 
+37 jmp 
+38 loada 0,0
+39 iload 
+40 nop 
+41 loada 1,3
+42 iload 
+43 icmp 
+44 jl 46
+45 jmp 59
+46 loada 0,0
+47 iload 
+48 call 0
+49 iprint 
+50 printl 
+51 loada 0,0
+52 loada 0,0
+53 iload 
+54 nop 
+55 ipush 1
+56 iadd 
+57 istore 
+58 jmp 38
+59 ipush 0
+60 iret 
+61 ipush 0
+62 iret 

@@ -1,0 +1,100 @@
+.constants:
+0 S "f1"
+1 S "f2"
+2 S "f3"
+3 S "main"
+.start:
+0 ipush 5
+1 loada 0,0
+2 iload 
+3 nop 
+4 ipush 5
+5 iadd 
+6 loada 0,0
+7 iload 
+8 nop 
+9 loada 0,1
+10 iload 
+11 iadd 
+12 ipush 3
+13 nop 
+14 ipush 1
+15 iadd 
+16 nop 
+17 loada 0,0
+18 iload 
+19 imul 
+20 nop 
+21 loada 0,1
+22 iload 
+23 nop 
+24 ipush 2
+25 idiv 
+26 isub 
+.functions:
+0 0 3 1
+1 1 0 1
+2 2 2 1
+3 3 0 1
+.F0:
+0 loada 0,0
+1 iload 
+2 nop 
+3 loada 0,1
+4 iload 
+5 iadd 
+6 nop 
+7 loada 0,2
+8 iload 
+9 iadd 
+10 loada 0,3
+11 iload 
+12 iret 
+13 ipush 0
+14 iret 
+.F1:
+0 nop 
+1 loada 0,0
+2 iload 
+3 iret 
+4 ipush 0
+5 iret 
+.F2:
+0 loada 0,0
+1 iload 
+2 nop 
+3 loada 0,1
+4 iload 
+5 iadd 
+6 iret 
+7 ipush 0
+8 iret 
+.F3:
+0 call 1
+1 ipush 0
+2 ipush 0
+3 loada 0,0
+4 iload 
+5 iprint 
+6 printl 
+7 loada 0,1
+8 loada 1,0
+9 iload 
+10 loada 1,1
+11 iload 
+12 call 2
+13 istore 
+14 loada 0,1
+15 iload 
+16 iprint 
+17 printl 
+18 loada 0,2
+19 loada 1,0
+20 iload 
+21 call 0
+22 istore 
+23 call 1
+24 ipush 0
+25 iret 
+26 ipush 0
+27 iret 

@@ -1,0 +1,13 @@
+.constants:
+0 S "main"
+1 S "Surprise Mother 
+30F F**ker"
+.start:
+.functions:
+0 0 0 1
+.F0:
+0 loadc 1
+1 sprint 
+2 printl 
+3 ipush 0
+4 iret 

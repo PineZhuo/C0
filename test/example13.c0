@@ -1,0 +1,33 @@
+void find(int l, int r, int v) {
+    int mid = -1;
+    if (v < l) {
+        print(-1);
+        return;
+    }
+    if (v >= r) {
+        print(-1);
+        return;
+    }
+    while (l<r) {
+        mid = l + (r - l) / 2;
+        print(l, mid, r);
+        if (mid == v) {
+            return;
+        }
+        if (mid < v) {
+            l = mid + 1;
+        }
+        else {
+            r = mid;
+        }
+    }
+}
+int main() {
+    const int L = 0;
+    const int R = 0x00010000;
+    int v;
+    scan(v);
+    find(L, R, v)
+   ;
+   return 0;
+}

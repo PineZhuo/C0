@@ -1,0 +1,6 @@
+int main() {
+     int t = (char)(int)(char)(double)(char)((1)/2);
+     double a = 3.1415926;
+     double b = (double)(int)a;
+     print(b);
+ }

@@ -1,0 +1,31 @@
+int mod(int i, int j) {
+    int k = i/j;
+    return i - j*k;
+}
+char tohex(int i) {
+    if (i < 0) {
+        return '?';
+    }
+    if (i >= 16) {
+        return '?';
+    }
+    if (i < 10) {
+        return '0'+i;
+    }
+    return 'a'+(i-10);
+}
+int main() {
+    int n, i = 0;
+    char r;
+    print("input a positive integer");
+    while (i < 6) {
+        scan(n);
+        print("mod is:",mod(n,16));
+        r = (char)(int)tohex(mod(n, 16));
+        n = n/16;
+        print(tohex(mod(n,16)),r);
+        i = i+1;
+        n=n/16;
+    }
+    return 0;
+}

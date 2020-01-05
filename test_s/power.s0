@@ -1,0 +1,138 @@
+.constants:
+0 S "strength"
+1 S "power"
+2 D 0x3e601b2b29a4692b
+3 S "i is:"
+4 S " now result is:"
+5 S "main"
+6 S "Input a number:"
+7 S "less than upper_line"
+8 S "more than upper_line"
+9 S "Now we test the nagtive-parameter:"
+.start:
+0 ipush 2
+1 ipush 200
+2 ipush 0
+3 ipush 0
+.functions:
+0 0 0 1
+1 1 1 1
+2 5 0 1
+.F0:
+0 ipush 1
+1 ipush 3
+2 ret 
+.F1:
+0 ipush 0
+1 ipush 0
+2 loadc 2
+3 loada 0,1
+4 ipush 12
+5 istore 
+6 loada 0,0
+7 iload 
+8 nop 
+9 ipush 0
+10 icmp 
+11 jle 13
+12 jmp 15
+13 ipush 0
+14 iret 
+15 loada 0,2
+16 ipush 1
+17 istore 
+18 loada 0,2
+19 iload 
+20 nop 
+21 loada 0,0
+22 iload 
+23 icmp 
+24 jle 26
+25 jmp 56
+26 loada 0,1
+27 loada 0,1
+28 iload 
+29 nop 
+30 istore 
+31 loadc 3
+32 sprint 
+33 bipush 32
+34 cprint 
+35 loada 0,2
+36 iload 
+37 iprint 
+38 bipush 32
+39 cprint 
+40 loadc 4
+41 sprint 
+42 bipush 32
+43 cprint 
+44 loada 0,1
+45 iload 
+46 iprint 
+47 printl 
+48 loada 0,2
+49 loada 0,2
+50 iload 
+51 nop 
+52 ipush 1
+53 iadd 
+54 istore 
+55 jmp 18
+56 loada 0,1
+57 iload 
+58 iret 
+59 ipush 0
+60 iret 
+.F2:
+0 ipush 0
+1 ipush 0
+2 loadc 6
+3 sprint 
+4 printl 
+5 loada 0,0
+6 iscan 
+7 istore 
+8 loada 0,1
+9 loada 0,0
+10 iload 
+11 call 1
+12 istore 
+13 loada 0,1
+14 iload 
+15 iprint 
+16 printl 
+17 loada 0,1
+18 iload 
+19 i2d 
+20 dcmp 
+21 jl 23
+22 jmp 33
+23 loadc 7
+24 sprint 
+25 bipush 32
+26 cprint 
+27 nop 
+28 loada 0,1
+29 iload 
+30 dprint 
+31 printl 
+32 jmp 42
+33 loadc 8
+34 sprint 
+35 bipush 32
+36 cprint 
+37 loada 0,1
+38 iload 
+39 nop 
+40 iprint 
+41 printl 
+42 loadc 9
+43 sprint 
+44 printl 
+45 ipush 1
+46 ineg 
+47 call 1
+48 iprint 
+49 printl 
+50 ret 

@@ -1,0 +1,9 @@
+int aa(){
+    return ;
+}
+int main(){
+    int a,b;
+    scan(a);
+    scan(b);
+    print(a+b);
+}

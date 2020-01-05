@@ -1,0 +1,8 @@
+void getChar(){
+    return;
+ }
+
+int main(){
+    char a = (char)getChar();
+    print(a);
+}

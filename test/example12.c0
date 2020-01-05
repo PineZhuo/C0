@@ -1,0 +1,29 @@
+int x = 5, y = x+5;
+const int a = x + y;
+const int b = (3+1)*x-y/2;
+int f1(int p1, int p2, int p3){
+	int x = p1+p2+p3;
+
+	return x;
+}
+
+int f2(){
+int y = a*b;
+	return y;
+}
+
+int f3(int p1, int p2){
+	return p1+p2;
+}
+
+int main()
+{
+    int c = f2(), d, e;
+print(c);
+    d = f3(x, y);
+print(d);
+   e =  f1(a, b, x);
+
+f2();
+return 0;
+}

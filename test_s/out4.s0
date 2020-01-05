@@ -1,0 +1,72 @@
+.constants:
+0 D 0x40091eb851eb851f
+1 S "foo"
+2 S "main"
+3 S "current i is:"
+4 S " current j is:"
+.start:
+0 loadc 0
+.functions:
+0 1 0 1
+1 2 0 1
+.F0:
+0 ipush 3
+1 iret 
+2 ipush 0
+3 iret 
+.F1:
+0 ipush 10
+1 ipush 20
+2 loada 0,0
+3 iload 
+4 nop 
+5 ipush 15
+6 icmp 
+7 jl 9
+8 jmp 53
+9 loada 0,1
+10 iload 
+11 nop 
+12 ipush 25
+13 icmp 
+14 jl 16
+15 jmp 45
+16 call 0
+17 nop 
+18 jne 20
+19 jmp 44
+20 loadc 3
+21 sprint 
+22 bipush 32
+23 cprint 
+24 loada 0,0
+25 iload 
+26 iprint 
+27 bipush 32
+28 cprint 
+29 loadc 4
+30 sprint 
+31 bipush 32
+32 cprint 
+33 loada 0,1
+34 iload 
+35 iprint 
+36 printl 
+37 loada 0,1
+38 loada 0,1
+39 iload 
+40 nop 
+41 ipush 1
+42 iadd 
+43 istore 
+44 jmp 9
+45 loada 0,0
+46 loada 0,0
+47 iload 
+48 nop 
+49 ipush 1
+50 iadd 
+51 istore 
+52 jmp 2
+53 ipush 0
+54 iret 

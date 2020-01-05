@@ -1,0 +1,35 @@
+double fabs(double a) {
+    if (a < 0) a = -a;
+    return a;
+}
+
+int main() {
+    int in;
+    double left = 0, right;
+    double eps = 1e-7;
+    print("sqrt:");
+    scan(in);
+
+    right = (double)in;
+
+    print("start, in:", in, ", left:", left, ", right:", right);
+    while (fabs(left - right) >= eps) {
+        double mid = (right + left) / 2;
+        double prod = mid * mid;
+        print("mid =", mid, ", left =", left, ", right =", right, ", prod =", prod);
+
+        print("term:", fabs(prod - in), "eps:", eps);
+        if (fabs(prod - in) < eps) {
+            print("sqrt of", in, "is", mid);
+            return 0;
+        }
+
+        if (prod > in) {
+            right = mid;
+        } else {
+            left = mid;
+        }
+    }
+    print("sqrt of", in, "is", left);
+    return 0;
+}

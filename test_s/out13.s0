@@ -1,0 +1,118 @@
+.constants:
+0 S "find"
+1 S "main"
+.start:
+.functions:
+0 0 3 1
+1 1 0 1
+.F0:
+0 ipush 1
+1 ineg 
+2 loada 0,2
+3 iload 
+4 nop 
+5 loada 0,0
+6 iload 
+7 icmp 
+8 jl 10
+9 jmp 15
+10 ipush 1
+11 ineg 
+12 iprint 
+13 printl 
+14 ret 
+15 loada 0,2
+16 iload 
+17 nop 
+18 loada 0,1
+19 iload 
+20 icmp 
+21 jge 23
+22 jmp 28
+23 ipush 1
+24 ineg 
+25 iprint 
+26 printl 
+27 ret 
+28 loada 0,0
+29 iload 
+30 nop 
+31 loada 0,1
+32 iload 
+33 icmp 
+34 jl 36
+35 jmp 95
+36 loada 0,3
+37 loada 0,0
+38 iload 
+39 nop 
+40 loada 0,1
+41 iload 
+42 nop 
+43 loada 0,0
+44 iload 
+45 isub 
+46 nop 
+47 ipush 2
+48 idiv 
+49 iadd 
+50 istore 
+51 loada 0,0
+52 iload 
+53 iprint 
+54 bipush 32
+55 cprint 
+56 loada 0,3
+57 iload 
+58 iprint 
+59 bipush 32
+60 cprint 
+61 loada 0,1
+62 iload 
+63 iprint 
+64 printl 
+65 loada 0,3
+66 iload 
+67 nop 
+68 loada 0,2
+69 iload 
+70 icmp 
+71 je 73
+72 jmp 74
+73 ret 
+74 loada 0,3
+75 iload 
+76 nop 
+77 loada 0,2
+78 iload 
+79 icmp 
+80 jl 82
+81 jmp 90
+82 loada 0,0
+83 loada 0,3
+84 iload 
+85 nop 
+86 ipush 1
+87 iadd 
+88 istore 
+89 jmp 94
+90 loada 0,1
+91 loada 0,3
+92 iload 
+93 istore 
+94 jmp 28
+95 ret 
+.F1:
+0 ipush 0
+1 ipush 65536
+2 ipush 0
+3 loada 0,2
+4 iscan 
+5 istore 
+6 loada 0,2
+7 iload 
+8 call 0
+9 ipush 0
+10 iret 
+11 ipush 0
+12 iret 

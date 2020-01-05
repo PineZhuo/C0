@@ -1,0 +1,7 @@
+void foo(){
+    return;
+}
+int main(){
+    char a = (char)foo();
+    return 0;
+}

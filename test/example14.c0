@@ -1,0 +1,4 @@
+int main() {
+     print("\\\\\\\x56");
+     return 0;
+}

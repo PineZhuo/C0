@@ -1,0 +1,37 @@
+.constants:
+0 S "foo"
+1 D 0x40091eb851eb851f
+2 S "main"
+3 S "yes!"
+4 S "No!"
+.start:
+.functions:
+0 0 0 1
+1 2 0 1
+.F0:
+0 loadc 1
+1 dret 
+2 snew 2
+3 dret 
+.F1:
+0 call 0
+1 nop 
+2 jne 4
+3 jmp 19
+4 ipush 1
+5 nop 
+6 jne 8
+7 jmp 19
+8 ipush 1
+9 nop 
+10 jne 12
+11 jmp 16
+12 loadc 3
+13 sprint 
+14 printl 
+15 jmp 19
+16 loadc 4
+17 sprint 
+18 printl 
+19 ipush 0
+20 iret 

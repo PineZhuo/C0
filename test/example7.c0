@@ -1,0 +1,14 @@
+double foo(){
+    return 3.14;
+}
+
+int main(){
+    if(foo())
+        if(1)
+            if(1){
+                print("yes!");
+            }
+            else{
+                print("No!");
+            }
+}

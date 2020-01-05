@@ -1,0 +1,121 @@
+.constants:
+0 S "f1"
+1 S "f2"
+2 S "main"
+.start:
+0 ipush 10
+1 nop 
+2 ipush 2
+3 imul 
+4 ipush 10
+5 nop 
+6 loada 0,0
+7 iload 
+8 nop 
+9 loada 0,0
+10 iload 
+11 imul 
+12 iadd 
+.functions:
+0 0 0 1
+1 1 2 1
+2 2 0 1
+.F0:
+0 loada 1,0
+1 loada 1,1
+2 iload 
+3 istore 
+4 loada 1,1
+5 ipush 300
+6 istore 
+7 ret 
+.F1:
+0 loada 0,0
+1 iload 
+2 nop 
+3 loada 0,1
+4 iload 
+5 iadd 
+6 iret 
+7 ipush 0
+8 iret 
+.F2:
+0 loada 1,0
+1 iload 
+2 loada 1,1
+3 iload 
+4 call 1
+5 loada 1,0
+6 iload 
+7 nop 
+8 loada 1,1
+9 iload 
+10 iadd 
+11 loada 1,0
+12 iload 
+13 nop 
+14 loada 1,1
+15 iload 
+16 isub 
+17 call 1
+18 loada 1,0
+19 iload 
+20 iprint 
+21 bipush 32
+22 cprint 
+23 loada 1,1
+24 iload 
+25 iprint 
+26 printl 
+27 dprint 
+28 printl 
+29 dprint 
+30 printl 
+31 loada 1,0
+32 ipush 20
+33 istore 
+34 loada 1,1
+35 ipush 10
+36 istore 
+37 loada 1,0
+38 iload 
+39 nop 
+40 loada 1,1
+41 iload 
+42 nop 
+43 loada 1,0
+44 iload 
+45 imul 
+46 nop 
+47 nop 
+48 loada 1,0
+49 iload 
+50 iadd 
+51 nop 
+52 loada 1,1
+53 iload 
+54 nop 
+55 nop 
+56 loada 1,0
+57 iload 
+58 nop 
+59 loada 1,1
+60 iload 
+61 isub 
+62 imul 
+63 isub 
+64 iprint 
+65 printl 
+66 loada 1,0
+67 iload 
+68 ineg 
+69 nop 
+70 loada 1,1
+71 iload 
+72 imul 
+73 iprint 
+74 printl 
+75 ipush 0
+76 iret 
+77 ipush 0
+78 iret 

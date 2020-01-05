@@ -1,0 +1,27 @@
+.constants:
+0 S "main"
+1 D 0x400921fb4d12d84a
+.start:
+.functions:
+0 0 0 1
+.F0:
+0 ipush 1
+1 nop 
+2 ipush 2
+3 idiv 
+4 i2c 
+5 i2d 
+6 d2i 
+7 i2c 
+8 i2c 
+9 loadc 1
+10 loada 0,1
+11 dload 
+12 d2i 
+13 i2d 
+14 loada 0,3
+15 dload 
+16 dprint 
+17 printl 
+18 ipush 0
+19 iret 

@@ -1,0 +1,115 @@
+.constants:
+0 S "main"
+1 S "current i is:"
+2 S "current j is:"
+3 S "fake"
+4 S "amd yes"
+.start:
+.functions:
+0 0 0 1
+.F0:
+0 ipush 0
+1 ipush 0
+2 ipush 1
+3 nop 
+4 jne 6
+5 jmp 100
+6 loada 0,0
+7 iload 
+8 nop 
+9 ipush 10
+10 icmp 
+11 jl 13
+12 jmp 99
+13 loada 0,0
+14 iload 
+15 nop 
+16 ipush 100
+17 icmp 
+18 jl 20
+19 jmp 85
+20 loadc 1
+21 sprint 
+22 bipush 32
+23 cprint 
+24 loada 0,0
+25 iload 
+26 iprint 
+27 printl 
+28 loada 0,1
+29 iload 
+30 nop 
+31 ipush 3
+32 icmp 
+33 jl 35
+34 jmp 84
+35 loada 0,1
+36 iload 
+37 nop 
+38 ipush 100
+39 icmp 
+40 jl 42
+41 jmp 58
+42 loadc 2
+43 sprint 
+44 bipush 32
+45 cprint 
+46 loada 0,1
+47 iload 
+48 iprint 
+49 printl 
+50 loada 0,1
+51 loada 0,1
+52 iload 
+53 nop 
+54 ipush 1
+55 iadd 
+56 istore 
+57 jmp 83
+58 loada 0,1
+59 iload 
+60 nop 
+61 ipush 10
+62 icmp 
+63 jg 65
+64 jmp 69
+65 loada 0,1
+66 ipush 10
+67 istore 
+68 jmp 83
+69 loada 0,1
+70 iload 
+71 nop 
+72 ipush 100
+73 icmp 
+74 jg 76
+75 jmp 80
+76 loada 0,1
+77 ipush 100
+78 istore 
+79 jmp 83
+80 loada 0,1
+81 ipush 1000
+82 istore 
+83 jmp 28
+84 jmp 88
+85 loadc 3
+86 sprint 
+87 printl 
+88 loadc 4
+89 sprint 
+90 printl 
+91 loada 0,0
+92 loada 0,0
+93 iload 
+94 nop 
+95 ipush 1
+96 iadd 
+97 istore 
+98 jmp 6
+99 jmp 103
+100 loada 0,0
+101 ipush 10
+102 istore 
+103 ipush 0
+104 iret 

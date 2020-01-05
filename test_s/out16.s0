@@ -1,0 +1,79 @@
+.constants:
+0 S "hanoi"
+1 S "->"
+2 S "->"
+3 S "main"
+.start:
+.functions:
+0 0 4 1
+1 3 0 1
+.F0:
+0 loada 0,0
+1 iload 
+2 nop 
+3 ipush 1
+4 icmp 
+5 je 7
+6 jmp 21
+7 loada 0,1
+8 iload 
+9 iprint 
+10 bipush 32
+11 cprint 
+12 loadc 1
+13 sprint 
+14 bipush 32
+15 cprint 
+16 loada 0,3
+17 iload 
+18 iprint 
+19 printl 
+20 jmp 58
+21 loada 0,0
+22 iload 
+23 nop 
+24 ipush 1
+25 isub 
+26 loada 0,1
+27 iload 
+28 loada 0,3
+29 iload 
+30 loada 0,2
+31 iload 
+32 call 0
+33 loada 0,1
+34 iload 
+35 iprint 
+36 bipush 32
+37 cprint 
+38 loadc 2
+39 sprint 
+40 bipush 32
+41 cprint 
+42 loada 0,3
+43 iload 
+44 iprint 
+45 printl 
+46 loada 0,0
+47 iload 
+48 nop 
+49 ipush 1
+50 isub 
+51 loada 0,2
+52 iload 
+53 loada 0,1
+54 iload 
+55 loada 0,3
+56 iload 
+57 call 0
+58 ret 
+.F1:
+0 ipush 2
+1 bipush 97
+2 bipush 98
+3 bipush 99
+4 call 0
+5 ipush 0
+6 iret 
+7 ipush 0
+8 iret 
