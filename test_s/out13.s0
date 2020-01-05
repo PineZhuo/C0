@@ -109,10 +109,14 @@
 3 loada 0,2
 4 iscan 
 5 istore 
-6 loada 0,2
+6 loada 0,0
 7 iload 
-8 call 0
-9 ipush 0
-10 iret 
-11 ipush 0
-12 iret 
+8 loada 0,1
+9 iload 
+10 loada 0,2
+11 iload 
+12 call 0
+13 ipush 0
+14 iret 
+15 ipush 0
+16 iret 

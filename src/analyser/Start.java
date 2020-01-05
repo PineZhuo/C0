@@ -38,6 +38,11 @@ public class Start {
 				printHexEight(operands.getFirst(), out);
 				break;
 			}
+			case "bipush":{
+				out.write(0x01);
+				out.write((byte)Integer.parseInt(Integer.toHexString(operands.getFirst()), 16));
+				break;
+			}
 			//loada
 			case "loada":{
 				out.write(0x0a);
@@ -78,6 +83,55 @@ public class Start {
 			//ineg
 			case "ineg":{
 				out.write(0x40);
+				break;
+			}
+			case "loadc":{
+				out.write(0x09);
+				printHexFour(operands.getFirst(), out);
+				break;
+			}
+			case "i2d":{
+				out.write(0x60);
+				break;
+			}
+			case "d2i":{
+				out.write(0x61);
+				break;
+			}
+			case "i2c":{
+				out.write(0x62);
+				break;
+			}
+			case "dstore":{
+				out.write(0x21);
+				break;
+			}
+			case "nop":{
+				out.write(0x00);
+				break;
+			}
+			case "dadd":{
+				out.write(0x31);
+				break;
+			}
+			case "dsub":{
+				out.write(0x35);
+				break;
+			}
+			case "dmul":{
+				out.write(0x39);
+				break;
+			}
+			case "ddiv":{
+				out.write(0x3d);
+				break;
+			}
+			case "dneg":{
+				out.write(0x41);
+				break;
+			}
+			case "dload":{
+				out.write(0x11);
 				break;
 			}
 			default:{

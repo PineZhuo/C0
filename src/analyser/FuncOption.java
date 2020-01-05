@@ -69,140 +69,188 @@ public class FuncOption {
 		}
 		//iload
 		case "iload":{
-//			System.out.print("10" + " ");
 			out.write(0x10);
 			break;
 		}
 		//istore
 		case "istore":{
-//			System.out.print("20" + " ");
 			out.write(0x20);
 			break;
 		}
 		//isub
 		case "isub":{
-//			System.out.print("34" + " ");
 			out.write(0x34);
 			break;
 		}
 		//iadd
 		case "iadd":{
-//			System.out.print("30" + " ");
 			out.write(0x30);
 			break;
 		}
 		//imul
 		case "imul":{
-//			System.out.print("38" + " ");
 			out.write(0x38);
 			break;
 		}
 		//idiv
 		case "idiv":{
-//			System.out.print("3c" + " ");
 			out.write(0x3c);
 			break;
 		}
 		//ineg
 		case "ineg":{
-//			System.out.print("40" + " ");
 			out.write(0x40);
 			break;
 		}
 		//jmp
 		case "jmp":{
-//			System.out.print("70" + " " );
 			out.write(0x70);
 			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "je":{
-//			System.out.print("71" + " ");
 			out.write(0x71);
 			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "jne":{
-//			System.out.print("72" + " ");
 			out.write(0x72);
 			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "jl":{
-//			System.out.print("73" + " ");
 			out.write(0x73);
 			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "jge":{
-//			System.out.print("74" + " ");
 			out.write(0x74);
 			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "jg":{
-//			System.out.print("75" + " ");
 			out.write(0x75);
 			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "jle":{
-//			System.out.print("76" + " ");
 			out.write(0x76);
 			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "ret":{
-//			System.out.print("88" + " ");
 			out.write(0x88);
 			break;
 		}
 		case "iret":{
-//			System.out.print("89" + " ");
 			out.write(0x89);
 			break;
 		}
 		case "call":{
-//			System.out.print("80" + " ");
 			out.write(0x80);
 			printHexFour(operands.getFirst(), out);
 			break;
 		}
 		case "pop":{
-//			System.out.print("04" + " ");
 			out.write(0x04);
 			break;
 		}
 		case "iscan":{
-//			System.out.print("b0" + " ");
 			out.write(0xb0);
 			break;
 		}
 		case "iprint":{
-//			System.out.print("a0" + " ");
 			out.write(0xa0);
 			break;
 		}
 		case "cprint":{
-//			System.out.print("a2" + " ");
 			out.write(0xa2);
 			break;
 		}
 		case "bipush":{
-//			System.out.print("01" + " "
-//					+ Integer.toHexString(operands.getFirst(), out));
 			out.write(0x01);
 			out.write((byte)Integer.parseInt(Integer.toHexString(operands.getFirst()), 16));
 			break;
 		}
 		case "printl":{
-//			System.out.print("af" + " ");
 			out.write(0xaf);
 			break;
 		}
 		case "sprint":{
-//			System.out.print("a3" + " ");
 			out.write(0xa3);
+			break;
+		}
+		case "dload":{
+			out.write(0x11);
+			break;
+		}
+		case "snew":{
+			out.write(0x0c);
+			printHexEight(operands.getFirst(), out);
+			break;
+		}
+		case "dret":{
+			out.write(0x8a);
+			break;
+		}
+		case "nop":{
+			out.write(0x00);
+			break;
+		}
+		case "dscan":{
+			out.write(0xb1);
+			break;
+		}
+		case "dstore":{
+			out.write(0x21);
+			break;
+		}
+		case "cscan":{
+			out.write(0xb2);
+			break;
+		}
+		case "dprint":{
+			out.write(0xa1);
+			break;
+		}
+		case "i2d":{
+			out.write(0x60);
+			break;
+		}
+		case "d2i":{
+			out.write(0x61);
+			break;
+		}
+		case "i2c":{
+			out.write(0x62);
+			break;
+		}
+		case "icmp":{
+			out.write(0x44);
+			break;
+		}
+		case "dcmp":{
+			out.write(0x45);
+			break;
+		}
+		case "dadd":{
+			out.write(0x31);
+			break;
+		}
+		case "dsub":{
+			out.write(0x35);
+			break;
+		}
+		case "dmul":{
+			out.write(0x39);
+			break;
+		}
+		case "ddiv":{
+			out.write(0x3d);
+			break;
+		}
+		case "dneg":{
+			out.write(0x41);
 			break;
 		}
 		default:{

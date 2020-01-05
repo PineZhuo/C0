@@ -1,0 +1,9 @@
+//与const有关的定义
+const int a = 20;
+const double b = 156e-2;
+const char c = '\x56';
+int main()
+{
+	int d = (double)(int)((double)(char)(int)a+(int)b+(double)(char)c);
+	print(a, b, c);
+}

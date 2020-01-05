@@ -423,6 +423,7 @@ public class Analyser {
 		funcOpTable.get(funcNum-1).add(new FuncOption("nop", new Pair()));
 		int offset = funcOpTable.get(funcNum-1).size()-1;
 		Token token = nextToken();
+		int offset1 = 0, offset2 = 0;
 		if(isCompareSign(token)) {
 			String compare = token.getValue();
 			err = expression();
@@ -457,7 +458,7 @@ public class Analyser {
 		else {
 			int a1 = funcOpTable.get(funcNum-1).size() + 2;
 			funcOpTable.get(funcNum-1).add(new FuncOption("jne", new Pair(a1)));
-			funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair()));
+//			funcOpTable.get(funcNum-1).add(new FuncOption("nop", new Pair()));
 			unreadToken();
 		}
 		return new Error();
@@ -516,7 +517,7 @@ public class Analyser {
 					}
 				}
 				else {
-					if(tt1 == TokenType.INT) {
+					if(tt1 == TokenType.INT || tt1 == TokenType.CHAR) {
 						if(tt2 == TokenType.CHAR || tt2 == TokenType.INT) {
 							funcOpTable.get(funcNum-1).add(new FuncOption("iadd", new Pair()));//无需转换类型
 							tt1 = TokenType.INT;
@@ -536,7 +537,6 @@ public class Analyser {
 							funcOpTable.get(funcNum-1).add(new FuncOption("dadd", new Pair()));
 						}
 					}
-					
 				}
 			}
 			else {
@@ -563,7 +563,7 @@ public class Analyser {
 					}
 				}
 				else {
-					if(tt1 == TokenType.INT) {
+					if(tt1 == TokenType.INT || tt1 == TokenType.CHAR) {
 						if(tt2 == TokenType.CHAR || tt2 == TokenType.INT) {
 							funcOpTable.get(funcNum-1).add(new FuncOption("isub", new Pair()));//无需转换类型
 							tt1 = TokenType.INT;
@@ -640,7 +640,7 @@ public class Analyser {
 					}
 				}
 				else {
-					if(tt1 == TokenType.INT) {
+					if(tt1 == TokenType.INT || tt1 == TokenType.CHAR) {
 						if(tt2 == TokenType.CHAR || tt2 == TokenType.INT) {
 							funcOpTable.get(funcNum-1).add(new FuncOption("imul", new Pair()));//无需转换类型
 							tt1 = TokenType.INT;
@@ -687,7 +687,7 @@ public class Analyser {
 					}
 				}
 				else {
-					if(tt1 == TokenType.INT) {
+					if(tt1 == TokenType.INT || tt1 == TokenType.CHAR) {
 						if(tt2 == TokenType.CHAR || tt2 == TokenType.INT) {
 							funcOpTable.get(funcNum-1).add(new FuncOption("idiv", new Pair()));//无需转换类型
 							tt1 = TokenType.INT;
@@ -889,49 +889,49 @@ public class Analyser {
 					IdentiType it = getIdentiType(token.getValue());
 					Pair p1 = getLevelandIndex(token.getValue());
 					if(level == 0) {
-						if(it == IdentiType.INT) {
+						if(it == IdentiType.INT || it == IdentiType.CONST_INT){
 							startTable.add(new Start("loada", p1));
 							startTable.add(new Start("iload", new Pair()));
 							return new Error(TokenType.INT);
 						}
-						else if(it == IdentiType.CHAR) {
+						else if(it == IdentiType.CHAR || it == IdentiType.CONST_CHAR) {
 							startTable.add(new Start("loada", p1));
 							startTable.add(new Start("iload", new Pair()));
 							return new Error(TokenType.CHAR);
 						}
-						else if(it == IdentiType.DOUBLE) {
+						else if(it == IdentiType.DOUBLE || it == IdentiType.CONST_DOUBLE) {
 							startTable.add(new Start("loada", p1));
 							startTable.add(new Start("dload", new Pair()));
 							return new Error(TokenType.DOUBLE);
 						}
 					}
 					else {
-						if(it == IdentiType.INT) {
+						if(it == IdentiType.INT || it == IdentiType.CONST_INT) {
 							funcOpTable.get(funcNum-1).add(new FuncOption("loada", p1));
 							funcOpTable.get(funcNum-1).add(new FuncOption("iload", new Pair()));
 							return new Error(TokenType.INT);
 						}
-						else if(it == IdentiType.CHAR) {
+						else if(it == IdentiType.CHAR || it == IdentiType.CONST_CHAR) {
 							funcOpTable.get(funcNum-1).add(new FuncOption("loada", p1));
 							funcOpTable.get(funcNum-1).add(new FuncOption("iload", new Pair()));
 							return new Error(TokenType.CHAR);
 						}
-						else if(it == IdentiType.DOUBLE) {
+						else if(it == IdentiType.DOUBLE || it == IdentiType.CONST_DOUBLE) {
 							funcOpTable.get(funcNum-1).add(new FuncOption("loada", p1));
 							funcOpTable.get(funcNum-1).add(new FuncOption("dload", new Pair()));
 							return new Error(TokenType.DOUBLE);
 						}
 						
 					}
-					if(it == IdentiType.CHAR) {
-						return new Error(TokenType.CHAR);
-					}
-					else if(it == IdentiType.INT) {
-						return new Error(TokenType.INT);
-					}
-					else if(it == IdentiType.DOUBLE) {
-						return new Error(TokenType.DOUBLE);
-					}
+//					if(it == IdentiType.CHAR) {
+//						return new Error(TokenType.CHAR);
+//					}
+//					else if(it == IdentiType.INT) {
+//						return new Error(TokenType.INT);
+//					}
+//					else if(it == IdentiType.DOUBLE) {
+//						return new Error(TokenType.DOUBLE);
+//					}
 				}
 				break;
 			}
@@ -1413,47 +1413,31 @@ public class Analyser {
 		
 		Error err = condition();
 		if(err.isError()) return err;
-		
+		funcOpTable.get(funcNum-1).add(new FuncOption("nop", new Pair()));
+		int offset1 = funcOpTable.get(funcNum-1).size()-1;
 		token = nextToken();
 		if(token.getTokenType() != TokenType.RIGHT_BRACKET)
 			return new Error(token.getPos(), ErrorType.INVALID_INPUT_ERROR);
 		
-		err = statement();
-//		token = nextToken();
-//		if(token.getTokenType() == TokenType.LEFT_BRACE) {
-//			unreadToken();
-//			err = compoundState();
-//		}
-//		else {
-//			unreadToken();
-//			err = statement();
-//		}
-			
-		
+		err = statement();		
 		if(err.isError()) return err;
 		
 		token = nextToken();
 		if(token.getTokenType() != TokenType.ELSE) {
-			//我需要在当前函数的table里找到被我暂存的条件跳转语句
-			//然后修改它
-			setJmpInstruct();
+			//根据offset修改nop
+			int a = funcOpTable.get(funcNum-1).size();
+			funcOpTable.get(funcNum-1).set(offset1, new FuncOption("jmp", new Pair(a)));
 			unreadToken();
 		}
 		else {
-			funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair()));//if如果跑了，就不跑else了
-			setJmpInstruct();
+			funcOpTable.get(funcNum-1).add(new FuncOption("nop", new Pair()));//if如果跑了，就不跑else了
+			int offset2 = funcOpTable.get(funcNum-1).size() - 1;
+			int a = funcOpTable.get(funcNum-1).size();
+			funcOpTable.get(funcNum-1).set(offset1, new FuncOption("jmp", new Pair(a)));
 			err = statement();
-//			token = nextToken();
-//			if(token.getTokenType() == TokenType.LEFT_BRACE) {
-//				unreadToken();
-//				err = compoundState();
-//			}
-//			else {
-//				unreadToken();
-//				err = statement();
-//			}
 			if(err.isError()) return err;
-			setJmpInstruct();
+			a = funcOpTable.get(funcNum-1).size();
+			funcOpTable.get(funcNum-1).set(offset2, new FuncOption("jmp", new Pair(a)));
 		}
 		
 		return new Error();
@@ -1470,27 +1454,21 @@ public class Analyser {
 			return new Error(token.getPos(), ErrorType.NO_LEFT_BRACKET);
 		
 		//这将会成为condition里第一句指令的下标
-		int index1 = funcOpTable.get (funcNum-1).size();
+		int offset1 = funcOpTable.get (funcNum-1).size();
 		Error err = condition();
 		if(err.isError()) return err;
-		
+		int offset2 = funcOpTable.get(funcNum-1).size();
+		funcOpTable.get(funcNum-1).add(new FuncOption("nop", new Pair()));
 		token = nextToken();
 		if(token.getTokenType() != TokenType.RIGHT_BRACKET)
 			return new Error(token.getPos(), ErrorType.NO_RIGHT_BRACKET);
 		
 		err = statement();
-//		token = nextToken();
-//		if(token.getTokenType() == TokenType.LEFT_BRACE) {
-//			unreadToken();
-//			err = compoundState();
-//		}
-//		else {
-//			unreadToken();
-//			err = statement();
-//		}
 		if(err.isError()) return err;
-		funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair(index1)));
-		setJmpInstruct();
+		funcOpTable.get(funcNum-1).add(new FuncOption("jmp", new Pair(offset1)));
+//		setJmpInstruct();
+		int a = funcOpTable.get(funcNum-1).size();
+		funcOpTable.get(funcNum-1).set(offset2, new FuncOption("jmp", new Pair(a)));
 		return new Error();
 	}
 	
@@ -1571,7 +1549,8 @@ public class Analyser {
 	
 	//<输出列表> -> <输出> { ',' <输出> }
 	private Error printList()  {
-		Error err = print();
+		Error err = print
+				();
 		if(err.isError()) return err;
 		Token token = nextToken();
 		while(token.getTokenType() == TokenType.COMMA) {
@@ -1591,9 +1570,7 @@ public class Analyser {
 		if(token.getTokenType() == TokenType.CHARACTER) {
 //			int a = Integer.parseInt(token.getValue());
 			char a;
-//			System.out.println(token.getValue());
-//			if(token.getValue().length() == 1) {
-				a = token.getValue().charAt(0);
+			a = token.getValue().charAt(0);
 //			}
 			
 			funcOpTable.get(funcNum-1).add(new FuncOption("bipush", new Pair((int)a)));
@@ -1610,10 +1587,12 @@ public class Analyser {
 			unreadToken();
 			Error err = expression();
 			if(err.isError()) return err;
-			if(err.getTokenType() == TokenType.INT || err.getTokenType() == TokenType.CHAR)
+			if(err.getTokenType() == TokenType.INT)
 				funcOpTable.get(funcNum-1).add(new FuncOption("iprint", new Pair()));
-			else
+			else if(err.getTokenType() == TokenType.DOUBLE)
 				funcOpTable.get(funcNum-1).add(new FuncOption("dprint", new Pair()));
+			else 
+				funcOpTable.get(funcNum-1).add(new FuncOption("cprint", new Pair()));
 		}
 		
 		return new Error();
@@ -1961,9 +1940,9 @@ public class Analyser {
 	}
 	
 	//添加跳转指令
+	//返回offset
 	private void addCompareInstruct(String s) {
 		String jmp1 = new String();
-		String jmp2 = new String("jmp");
 		int a1 = funcOpTable.get(funcNum-1).size() + 2;
 		if(s.equals("<")) {
 			jmp1 = "jl";
@@ -1984,24 +1963,23 @@ public class Analyser {
 			jmp1 = "jne";
 		}
 		funcOpTable.get(funcNum-1).add(new FuncOption(jmp1, new Pair(a1)));
-		funcOpTable.get(funcNum-1).add(new FuncOption(jmp2, new Pair()));
 	}
 	
 	//为之前留空的跳转指令设置offset
-	private void setJmpInstruct() {
-		ArrayList<FuncOption> tmp = funcOpTable.get(funcNum-1);
-		int size = funcOpTable.get(funcNum-1).size();
-		for(int i = size-2; i >= 0; i--) {
-			if(isCompareInstruct(tmp.get(i).getOpcode())) {
-				//找到了第一个跳转
-				//而且没有offset
-				if(tmp.get(i).getOperandNum() == 0) {
-					funcOpTable.get(funcNum-1).get(i).setOperands(new Pair(size));
-					break;
-				}
-			}
-		}
-	}
+//	private void setJmpInstruct() {
+//		ArrayList<FuncOption> tmp = funcOpTable.get(funcNum-1);
+//		int size = funcOpTable.get(funcNum-1).size();
+//		for(int i = size-2; i >= 0; i--) {
+//			if(isCompareInstruct(tmp.get(i).getOpcode())) {
+//				//找到了第一个跳转
+//				//而且没有offset
+//				if(tmp.get(i).getOperandNum() == 0) {
+//					funcOpTable.get(funcNum-1).get(i).setOperands(new Pair(size));
+//					break;
+//				}
+//			}
+//		}
+//	}
 	
 	//判断是否是跳转指令
 	private boolean isCompareInstruct(String s) {

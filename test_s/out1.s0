@@ -16,38 +16,37 @@
 3 ipush 0
 4 icmp 
 5 jle 7
-6 jmp 11
+6 jmp 10
 7 ipush 0
-8 i2c 
-9 iret 
-10 jmp 36
-11 loada 0,0
-12 iload 
-13 nop 
-14 ipush 1
-15 icmp 
-16 je 18
-17 jmp 22
-18 ipush 1
-19 i2c 
-20 iret 
-21 jmp 36
-22 loada 0,0
-23 iload 
-24 nop 
-25 ipush 2
-26 isub 
-27 call 0
-28 nop 
-29 loada 0,0
-30 iload 
-31 nop 
-32 ipush 1
-33 isub 
-34 call 0
-35 iret 
-36 ipush 0
-37 iret 
+8 iret 
+9 jmp 35
+10 loada 0,0
+11 iload 
+12 nop 
+13 ipush 1
+14 icmp 
+15 je 17
+16 jmp 20
+17 ipush 1
+18 iret 
+19 jmp 35
+20 loada 0,0
+21 iload 
+22 nop 
+23 ipush 2
+24 isub 
+25 call 0
+26 nop 
+27 loada 0,0
+28 iload 
+29 nop 
+30 ipush 1
+31 isub 
+32 call 0
+33 iadd 
+34 iret 
+35 ipush 0
+36 iret 
 .F1:
 0 ipush 0
 1 ipush 0
@@ -86,7 +85,7 @@
 34 printl 
 35 ipush 0
 36 iret 
-37 jmp 
+37 jmp 38
 38 loada 0,0
 39 iload 
 40 nop 

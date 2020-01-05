@@ -53,12 +53,17 @@
 13 ipush 0
 14 iret 
 .F1:
-0 nop 
-1 loada 0,0
-2 iload 
-3 iret 
-4 ipush 0
-5 iret 
+0 loada 1,2
+1 iload 
+2 nop 
+3 loada 1,3
+4 iload 
+5 imul 
+6 loada 0,0
+7 iload 
+8 iret 
+9 ipush 0
+10 iret 
 .F2:
 0 loada 0,0
 1 iload 
@@ -89,12 +94,16 @@
 16 iprint 
 17 printl 
 18 loada 0,2
-19 loada 1,0
+19 loada 1,2
 20 iload 
-21 call 0
-22 istore 
-23 call 1
-24 ipush 0
-25 iret 
-26 ipush 0
-27 iret 
+21 loada 1,3
+22 iload 
+23 loada 1,0
+24 iload 
+25 call 0
+26 istore 
+27 call 1
+28 ipush 0
+29 iret 
+30 ipush 0
+31 iret 

@@ -1,0 +1,22 @@
+//双目运算符隐式转换
+char a1 = 'a'+1;
+char a2 = 'a'+1.0;
+char a3 = 'a'+'b';
+char a4 = 'a'*1;
+char a5 = 'a'/2.0;
+char a6 = 'a'*'b';
+int b1 = 10+1e7;
+int b2 = 10/1.e1;
+int b3 = '\x56' + '\\';
+int b4 = 101+202;
+int b5 = 'b'-'a';
+double c1 = a1+b1;
+double c2 = a2*b2;
+double c3 = a3/b3;
+double c4 = a4-b4;
+int main()
+{
+	print(a1,a2,a3,a4,a5,a6);
+	print(b1,b2,b3,b4,b5);
+	print(c1,c2,c3,c4);
+}

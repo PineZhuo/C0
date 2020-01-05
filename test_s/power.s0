@@ -48,42 +48,45 @@
 22 iload 
 23 icmp 
 24 jle 26
-25 jmp 56
+25 jmp 59
 26 loada 0,1
 27 loada 0,1
 28 iload 
 29 nop 
-30 istore 
-31 loadc 3
-32 sprint 
-33 bipush 32
-34 cprint 
-35 loada 0,2
-36 iload 
-37 iprint 
-38 bipush 32
-39 cprint 
-40 loadc 4
-41 sprint 
-42 bipush 32
-43 cprint 
-44 loada 0,1
-45 iload 
-46 iprint 
-47 printl 
-48 loada 0,2
-49 loada 0,2
-50 iload 
-51 nop 
-52 ipush 1
-53 iadd 
-54 istore 
-55 jmp 18
-56 loada 0,1
-57 iload 
-58 iret 
-59 ipush 0
-60 iret 
+30 loada 1,0
+31 iload 
+32 imul 
+33 istore 
+34 loadc 3
+35 sprint 
+36 bipush 32
+37 cprint 
+38 loada 0,2
+39 iload 
+40 iprint 
+41 bipush 32
+42 cprint 
+43 loadc 4
+44 sprint 
+45 bipush 32
+46 cprint 
+47 loada 0,1
+48 iload 
+49 iprint 
+50 printl 
+51 loada 0,2
+52 loada 0,2
+53 iload 
+54 nop 
+55 ipush 1
+56 iadd 
+57 istore 
+58 jmp 18
+59 loada 0,1
+60 iload 
+61 iret 
+62 ipush 0
+63 iret 
 .F2:
 0 ipush 0
 1 ipush 0
@@ -104,35 +107,43 @@
 16 printl 
 17 loada 0,1
 18 iload 
-19 i2d 
-20 dcmp 
-21 jl 23
-22 jmp 33
-23 loadc 7
-24 sprint 
-25 bipush 32
-26 cprint 
-27 nop 
-28 loada 0,1
-29 iload 
-30 dprint 
-31 printl 
-32 jmp 42
-33 loadc 8
-34 sprint 
-35 bipush 32
-36 cprint 
-37 loada 0,1
-38 iload 
-39 nop 
-40 iprint 
-41 printl 
-42 loadc 9
-43 sprint 
-44 printl 
-45 ipush 1
-46 ineg 
-47 call 1
+19 nop 
+20 loada 1,1
+21 iload 
+22 icmp 
+23 jl 25
+24 jmp 38
+25 loadc 7
+26 sprint 
+27 bipush 32
+28 cprint 
+29 loada 1,1
+30 iload 
+31 nop 
+32 loada 0,1
+33 iload 
+34 isub 
+35 iprint 
+36 printl 
+37 jmp 50
+38 loadc 8
+39 sprint 
+40 bipush 32
+41 cprint 
+42 loada 0,1
+43 iload 
+44 nop 
+45 loada 1,1
+46 iload 
+47 isub 
 48 iprint 
 49 printl 
-50 ret 
+50 loadc 9
+51 sprint 
+52 printl 
+53 ipush 1
+54 ineg 
+55 call 1
+56 iprint 
+57 printl 
+58 ret 

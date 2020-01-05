@@ -1,0 +1,26 @@
+int f1(int x, double y, char z)
+{
+	print(x, y, z);
+	return 0;
+}
+
+void main()
+{
+	int a, b, c;
+	char d, e, f;
+	double g, h, i;
+	scan(a);
+	scan(b);
+	scan(c);
+	scan(d);
+	scan(e);
+	scan(f);
+	scan(g);
+	scan(h);
+	scan(i);
+	f1(a, b, c);
+	f1(d, e, f);
+	f1(g, h, c);
+	f1(a+b, b+c, c+d);
+	f1(a+e, b+f, c+g);
+}

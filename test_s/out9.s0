@@ -67,55 +67,66 @@
 24 iload 
 25 iprint 
 26 printl 
-27 dprint 
-28 printl 
-29 dprint 
+27 loada 0,0
+28 iload 
+29 iprint 
 30 printl 
-31 loada 1,0
-32 ipush 20
-33 istore 
-34 loada 1,1
-35 ipush 10
-36 istore 
-37 loada 1,0
-38 iload 
-39 nop 
-40 loada 1,1
-41 iload 
-42 nop 
-43 loada 1,0
-44 iload 
-45 imul 
+31 loada 0,1
+32 iload 
+33 iprint 
+34 printl 
+35 loada 1,0
+36 ipush 20
+37 istore 
+38 loada 1,1
+39 ipush 10
+40 istore 
+41 loada 1,0
+42 iload 
+43 nop 
+44 loada 1,1
+45 iload 
 46 nop 
-47 nop 
-48 loada 1,0
-49 iload 
-50 iadd 
-51 nop 
-52 loada 1,1
-53 iload 
-54 nop 
-55 nop 
-56 loada 1,0
-57 iload 
-58 nop 
-59 loada 1,1
-60 iload 
-61 isub 
-62 imul 
-63 isub 
-64 iprint 
-65 printl 
-66 loada 1,0
-67 iload 
-68 ineg 
+47 loada 1,0
+48 iload 
+49 imul 
+50 nop 
+51 loada 0,0
+52 iload 
+53 nop 
+54 loada 1,0
+55 iload 
+56 isub 
+57 idiv 
+58 iadd 
+59 nop 
+60 loada 1,1
+61 iload 
+62 nop 
+63 loada 0,0
+64 iload 
+65 imul 
+66 nop 
+67 loada 1,0
+68 iload 
 69 nop 
 70 loada 1,1
 71 iload 
-72 imul 
-73 iprint 
-74 printl 
-75 ipush 0
-76 iret 
-77 ipush 0
-78 iret 
+72 isub 
+73 imul 
+74 isub 
+75 iprint 
+76 printl 
+77 loada 1,0
+78 iload 
+79 ineg 
+80 nop 
+81 loada 1,1
+82 iload 
+83 imul 
+84 iprint 
+85 printl 
+86 ipush 0
+87 iret 
+88 ipush 0
+89 iret 

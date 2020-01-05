@@ -7,6 +7,8 @@ int main() {
     int in;
     double left = 0, right;
     double eps = 1e-7;
+double mid;
+double prod;
     print("sqrt:");
     scan(in);
 
@@ -14,8 +16,8 @@ int main() {
 
     print("start, in:", in, ", left:", left, ", right:", right);
     while (fabs(left - right) >= eps) {
-        double mid = (right + left) / 2;
-        double prod = mid * mid;
+        mid = (right + left) / 2;
+        prod = mid * mid;
         print("mid =", mid, ", left =", left, ", right =", right, ", prod =", prod);
 
         print("term:", fabs(prod - in), "eps:", eps);

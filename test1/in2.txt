@@ -1,0 +1,23 @@
+void main()
+{
+	int x = 3;
+	double y = 2.0;
+	char z = 97;
+	int i = 2;
+	while(x > 0.0){
+		if(y >= -1){
+			if(z <= 'f'){
+				while(i >= -2){
+					print("i:",i);
+					i = i-2;
+				}
+				print("z:",z);
+				z = z+2;
+			}
+			print("y:",y);
+			y = y -0.7;
+		}
+		print("x:", x);
+		x = x-0.7;
+	}
+}

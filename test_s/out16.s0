@@ -17,7 +17,7 @@
 6 jmp 21
 7 loada 0,1
 8 iload 
-9 iprint 
+9 cprint 
 10 bipush 32
 11 cprint 
 12 loadc 1
@@ -26,7 +26,7 @@
 15 cprint 
 16 loada 0,3
 17 iload 
-18 iprint 
+18 cprint 
 19 printl 
 20 jmp 58
 21 loada 0,0
@@ -43,7 +43,7 @@
 32 call 0
 33 loada 0,1
 34 iload 
-35 iprint 
+35 cprint 
 36 bipush 32
 37 cprint 
 38 loadc 2
@@ -52,7 +52,7 @@
 41 cprint 
 42 loada 0,3
 43 iload 
-44 iprint 
+44 cprint 
 45 printl 
 46 loada 0,0
 47 iload 
@@ -68,12 +68,17 @@
 57 call 0
 58 ret 
 .F1:
-0 ipush 2
-1 bipush 97
-2 bipush 98
-3 bipush 99
-4 call 0
-5 ipush 0
-6 iret 
-7 ipush 0
-8 iret 
+0 ipush 0
+1 loada 0,0
+2 iscan 
+3 istore 
+4 loada 0,0
+5 iload 
+6 bipush 97
+7 bipush 98
+8 bipush 99
+9 call 0
+10 ipush 0
+11 iret 
+12 ipush 0
+13 iret 

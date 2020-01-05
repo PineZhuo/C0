@@ -1,0 +1,5 @@
+double a = 1.0;
+void main()
+{
+	print(a);
+}

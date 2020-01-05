@@ -42,14 +42,16 @@
 35 iprint 
 36 bipush 32
 37 cprint 
-38 dprint 
-39 bipush 32
-40 cprint 
-41 loada 0,2
-42 iload 
-43 iprint 
-44 printl 
-45 ipush 0
-46 iret 
+38 loada 0,1
+39 iload 
+40 iprint 
+41 bipush 32
+42 cprint 
+43 loada 0,2
+44 iload 
+45 iprint 
+46 printl 
 47 ipush 0
 48 iret 
+49 ipush 0
+50 iret 

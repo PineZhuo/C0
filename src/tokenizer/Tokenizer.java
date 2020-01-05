@@ -24,6 +24,7 @@ public class Tokenizer {
 	private int index = 0;
 	private boolean isFrontZero = false;
 	
+	
 	public void runTokenizer() throws IOException {
 		FileInputStream path = new FileInputStream("d://in.txt");
 		PushbackReader input = new PushbackReader(new InputStreamReader(path, "utf8"), 1000);

@@ -54,22 +54,26 @@
 21 ipush 10
 22 icmp 
 23 jl 25
-24 jmp 30
+24 jmp 32
 25 bipush 48
 26 nop 
 27 loada 0,0
 28 iload 
-29 iret 
-30 bipush 97
-31 nop 
-32 loada 0,0
-33 iload 
-34 nop 
-35 ipush 10
-36 isub 
-37 iret 
-38 ipush 0
-39 iret 
+29 iadd 
+30 i2c 
+31 iret 
+32 bipush 97
+33 nop 
+34 loada 0,0
+35 iload 
+36 nop 
+37 ipush 10
+38 isub 
+39 iadd 
+40 i2c 
+41 iret 
+42 ipush 0
+43 iret 
 .F2:
 0 ipush 0
 1 ipush 0
