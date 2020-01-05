@@ -1,16 +1,10 @@
+double fabs(double a) {
+    if (a < 0) a = -a;
+    return a;
+}
+
 int main()
 {
-int i = 5, j = 5;
-	print("hello\x20world!\n");
-	print("\"");
-	print("      //////\\\\\\\\\\\\         ");
-	while(i){
-		while(j){
-			print("*");
-			 j = j -1;
-		}
-		i = i -1;
-		j = i;
-	}
-
+print(fabs(-5.7));
+print(fabs(1e3));
 }
