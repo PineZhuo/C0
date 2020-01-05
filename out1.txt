@@ -107,7 +107,7 @@
 61 loada 0,1
 62 dload 
 63 dadd 
-64 dmul 
+64 nop 
 65 ipush 2
 66 i2d 
 67 ddiv 
@@ -115,7 +115,7 @@
 69 loada 0,9
 70 loada 0,7
 71 dload 
-72 dmul 
+72 nop 
 73 loada 0,7
 74 dload 
 75 dmul 

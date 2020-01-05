@@ -609,7 +609,7 @@ public class Analyser {
 				offset = startTable.size()-1;
 			}
 			else {
-				funcOpTable.get(funcNum-1).add(new FuncOption("dmul", new Pair()));
+				funcOpTable.get(funcNum-1).add(new FuncOption("nop", new Pair()));
 				offset = funcOpTable.get(funcNum-1).size()-1;
 			}
 			
