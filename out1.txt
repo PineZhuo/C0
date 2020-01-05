@@ -21,7 +21,7 @@
 19 S "is"
 .start:
 .functions:
-0 0 1 1
+0 0 2 1
 1 1 0 1
 .F0:
 0 loada 0,0

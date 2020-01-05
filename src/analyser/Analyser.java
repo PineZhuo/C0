@@ -31,6 +31,7 @@ public class Analyser {
 	//构建索引表
 	private ArrayList<IndexTable> indexTable = new ArrayList<>();
 	private ArrayList<Pair> paraList = new ArrayList<>();
+	private int paraListSlot = 0;
 	//遇到一个大括号就加一层
 	private int level = 0;
 	//全局的栈式符号表
@@ -1009,12 +1010,13 @@ public class Analyser {
 		
 		//参数
 		paraList.clear();
+		paraListSlot = 0;
 		Error err = paraClause();
 		if(err.isError()) return err;
 		//常量表
 		constTable.add(new Constant(constIndex, "S", name));
 		//函数表
-		funcTable.add(new Functions(funcNum, constIndex, paraList.size()));
+		funcTable.add(new Functions(funcNum, constIndex, paraListSlot));
 		constIndex++;
 		ArrayList<Pair> paralist = new ArrayList<>();
 		paralist = (ArrayList<Pair>)paraList.clone();
@@ -1112,28 +1114,34 @@ public class Analyser {
 		if(isConst) {
 			if(tt == TokenType.INT) {
 				paraList.add(new Pair(token.getValue(), IdentiType.CONST_INT));
+				paraListSlot++;
 				it = IdentiType.CONST_INT;
 			}
 			else if(tt == TokenType.DOUBLE){
 				paraList.add(new Pair(token.getValue(), IdentiType.CONST_DOUBLE));
+				paraListSlot += 2;
 				it = IdentiType.CONST_DOUBLE;
 			}
 			else if(tt == TokenType.CHAR) {
 				paraList.add(new Pair(token.getValue(), IdentiType.CONST_CHAR));
+				paraListSlot++;
 				it = IdentiType.CONST_CHAR;
 			}
 		}
 		else {
 			if(tt == TokenType.INT) {
 				paraList.add(new Pair(token.getValue(), IdentiType.INT));
+				paraListSlot++;
 				it = IdentiType.INT;
 			}
 			else if(tt == TokenType.DOUBLE){
 				paraList.add(new Pair(token.getValue(), IdentiType.DOUBLE));
+				paraListSlot += 2;
 				it = IdentiType.DOUBLE;
 			}
 			else if(tt == TokenType.CHAR) {
 				paraList.add(new Pair(token.getValue(), IdentiType.CHAR));
+				paraListSlot++;
 				it = IdentiType.CHAR;
 			}
 		}
